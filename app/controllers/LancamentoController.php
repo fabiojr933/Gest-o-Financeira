@@ -6,6 +6,7 @@ use app\core\Controller;
 use app\models\Usuario;
 use app\models\Pagamento;
 use app\models\Despesa;
+use app\models\Lancamento;
 use app\models\Receita;
 
 class LancamentoController extends Controller
@@ -15,6 +16,7 @@ class LancamentoController extends Controller
    private $daoPagamento;
    private $daoDespesa;
    private $daoReceita;
+   private $daoLancamento;
 
    public function __construct()
    {
@@ -27,9 +29,30 @@ class LancamentoController extends Controller
       $this->daoPagamento = new Pagamento();
       $this->daoDespesa = new Despesa();
       $this->daoReceita = new Receita();
+      $this->daoLancamento = new Lancamento();
    }
    public function index()
    {
+      $inicio = $_POST['inicio'] ?? null;
+      $fim    = $_POST['fim'] ?? null;
+
+      $datas = [
+         'inicio' => $inicio,
+         'fim'    => $fim
+      ];
+
+      if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+
+         if (!validarDatas($datas)) {
+            $data  = getMesAtualInicioFim();
+            $datas = getMesInicioFim($data['ano'], $data['mes']);
+         } else {
+            $data  = getMesAtualInicioFim();
+            $datas = getMesInicioFim($data['ano'], $data['mes']);
+         }
+      }
+      dd($inicio, $fim);  // falta implementar a data
+      $dados['dados'] = $this->daoLancamento->lancamentoAll($this->uuid);
       $dados["view"]       = "lancamento/index";
       $this->load("template", $dados);
    }
@@ -44,21 +67,29 @@ class LancamentoController extends Controller
    }
    public function salvar()
    {
+      $valor = str_replace(',', '.', $_POST['valor']);
+      $valor = (float) $valor;
       $lancamento = new \stdClass();
       $lancamento->descricao = $_POST['descricao'];
       $lancamento->id_pagamento = $_POST['id_pagamento'];
       $lancamento->data = $_POST['data'];
-      $lancamento->valor = $_POST['valor'];
+      $lancamento->valor = $valor;
       $lancamento->id_usuario = $_POST['id_usuario'];
       $lancamento->tipo = $_POST['tipo'];
       $lancamento->id_conta = $_POST['id_conta'];
-      
+      $lancamento->uuid = $this->uuid;
 
-      dd($lancamento);
+      if (isVazio($lancamento->descricao) || isVazio($lancamento->tipo || $lancamento->id_conta)) {
+         setFlash('error', 'Preencha todos os campos!');
+         $this->redirect(URL_BASE . 'lancamento/novo');
+      }
+      $this->daoLancamento->novoLancamento($lancamento);
+      setFlash('success', 'Lançamento realizado com sucesso!');
+      $this->redirect(URL_BASE . 'lancamento/novo');
       try {
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
-         $this->redirect(URL_BASE . 'cliente/index');
+         $this->redirect(URL_BASE . 'Lançamento/novo');
       }
    }
 

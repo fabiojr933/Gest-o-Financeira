@@ -48,7 +48,7 @@ CREATE TABLE `fornecedores` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE movimentos (
+CREATE TABLE lancamentos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   descricao VARCHAR(255) NOT NULL,
   data DATE NOT NULL,
