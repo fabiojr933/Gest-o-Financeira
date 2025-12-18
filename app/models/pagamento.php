@@ -68,7 +68,7 @@ class Pagamento extends Model
         $stmt = $this->db->prepare($sql);
 
         $stmt->bindValue(':nome',     $pagamento->nome,     PDO::PARAM_STR);
-        $stmt->bindValue(':ativo',    $pagamento->ativo,    PDO::PARAM_STR);       
+        $stmt->bindValue(':ativo',    $pagamento->ativo,    PDO::PARAM_STR);
         $stmt->bindValue(':id',       $id,                PDO::PARAM_INT);
 
         $stmt->execute();
@@ -97,6 +97,22 @@ class Pagamento extends Model
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':nome', $pagamento->nome, PDO::PARAM_STR);
         $stmt->bindValue(':uuid', $pagamento->uuid, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result->total;
+    }
+
+    public function existeMovimento(int $id): bool
+    {
+        if (isVazio($id)) {
+            throw new InvalidArgumentException("Você precisa fazer login");
+        }
+
+        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join pagamentos c on l.id_pagamento = c.id
+                        WHERE c.id = :id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         $result = $stmt->fetch(PDO::FETCH_OBJ);

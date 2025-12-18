@@ -105,6 +105,22 @@ class Usuario extends Model
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->rowCount() > 0; 
+        return $stmt->rowCount() > 0;
+    }
+
+    public function existeMovimento(int $id): bool
+    {
+        if (isVazio($id)) {
+            throw new InvalidArgumentException("Você precisa fazer login");
+        }
+
+        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join usuarios c on l.id_usuario = c.id
+                        WHERE c.id = :id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result->total;
     }
 }

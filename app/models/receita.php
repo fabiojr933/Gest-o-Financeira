@@ -109,4 +109,19 @@ class Receita extends Model
         $result = $stmt->fetch(PDO::FETCH_OBJ);
         return $result->total;
     }
+    public function existeMovimento(int $id): bool
+    {
+        if (isVazio($id)) {
+            throw new InvalidArgumentException("Você precisa fazer login");
+        }
+
+        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join contas c on l.id_conta = c.id
+                        WHERE c.id = :id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result->total;
+    }
 }

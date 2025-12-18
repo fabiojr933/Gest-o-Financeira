@@ -14,34 +14,49 @@ class ReceitaController extends Controller
    private $dao;
    public function __construct()
    {
-      $usuario = $_SESSION['SESSION_LOGIN'] ?? null;    
+      $usuario = $_SESSION['SESSION_LOGIN'] ?? null;
       if (!$usuario) {
-          $this->redirect(URL_BASE . 'login');
+         $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
       $this->dao = new Receita();
    }
    public function index()
    {
-      $dados['dados'] = $this->dao->receitaAll($this->uuid);
-      $dados["view"]       = "receita/index";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->receitaAll($this->uuid);
+         $dados["view"]       = "receita/index";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'receita/index');
+      }
    }
    public function novo()
    {
-      $dados["view"]       = "receita/novo";
-      $this->load("template", $dados);
+      try {
+         $dados["view"]       = "receita/novo";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'receita/index');
+      }
    }
    public function editar($id)
    {
-      $dados['dados'] = $this->dao->receitaId($id);
-      $dados["view"]       = "receita/editar";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->receitaId($id);
+         $dados["view"]       = "receita/editar";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'receita/index');
+      }
    }
    public function salvar()
    {
       try {
-         
+
          $receita = new \stdClass();
          $receita->uuid       = $this->uuid;
          $receita->nome       = $_POST['nome'];
@@ -54,8 +69,8 @@ class ReceitaController extends Controller
          }
 
          $existe = $this->dao->existe($receita);
-         if($existe){
-             setFlash('error', 'Já existe receita cadastrado com esse nome!');
+         if ($existe) {
+            setFlash('error', 'Já existe receita cadastrado com esse nome!');
             $this->redirect(URL_BASE . 'receita/novo');
          }
 
@@ -75,7 +90,7 @@ class ReceitaController extends Controller
          $receita->ativo      =  $_POST['ativo'];
          $id                  =  $_POST['id'];
          $receita->natureza = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
-        
+
          if (isVazio($receita->nome) || isVazio($receita->ativo)) {
             setFlash('error', 'Preencha todos os campos obrigatorios!');
             $this->redirect(URL_BASE . 'receita/editar/' . $id);
@@ -94,6 +109,12 @@ class ReceitaController extends Controller
          if (isVazio($id)) {
             setFlash('error', 'Precisa informar um ID !');
             $this->redirect(URL_BASE . 'receita/index/');
+         }
+
+         $existe = $this->dao->existeMovimento($id);
+         if ($existe) {
+            setFlash('error', 'Esta receita não pode ser excluída porque já possui movimentações registradas. Se preferir, você pode desativá-la.');
+            $this->redirect(URL_BASE . 'receita/index');
          }
 
          $this->dao->excluir($id);

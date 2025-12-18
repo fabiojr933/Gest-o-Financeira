@@ -66,22 +66,34 @@ CREATE TABLE lancamentos (
 );
 
 
-CREATE TABLE titulos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_conta INT NOT NULL,            
-  id_cliente INT NULL,              
-  id_fornecedor INT NULL,   
-  id_pagamento int null,        
+CREATE TABLE contas_pagar (
+  id INT AUTO_INCREMENT PRIMARY KEY, 
   descricao VARCHAR(200) NOT NULL,
+  valor_total DECIMAL(10,2) NOT NULL,
+  qtde_parcelas INT NOT NULL,
+  parcelado CHAR(1) NOT NULL, -- S / N
+  data_emissao DATETIME DEFAULT CURRENT_TIMESTAMP,
+  uuid CHAR(36) NOT NULL,
+  id_usuario INT NOT NULL,
+  id_fornecedor INT NULL, 
+  FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id),
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)  
+);
+
+CREATE TABLE contas_pagar_parcelas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_conta_pagar INT NOT NULL, 
+  id_conta INT NOT NULL,
+  id_pagamento INT NULL,
+  numero_parcela INT NOT NULL,   
   valor DECIMAL(10,2) NOT NULL,
   data_vencimento DATE NOT NULL,
   data_pagamento DATE NULL,
-  status ENUM('ABERTO','PAGO','ATRASADO','CANCELADO') DEFAULT 'ABERTO',
-  uuid CHAR(36) NOT NULL,
-  id_usuario INT NOT NULL,
+  pago_por varchar(120) null,
+  status ENUM('ABERTO','PAGO') DEFAULT 'ABERTO',
   FOREIGN KEY (id_conta) REFERENCES contas(id),
-  FOREIGN KEY (id_cliente) REFERENCES clientes(id),
-  FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id),
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+  FOREIGN KEY (id_conta_pagar) REFERENCES contas_pagar(id),
   FOREIGN KEY (id_pagamento) REFERENCES pagamentos(id)
 );
+
+

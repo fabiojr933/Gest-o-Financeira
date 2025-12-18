@@ -88,7 +88,12 @@ class LoginController extends Controller
 
    public function sair()
    {
-      unset($_SESSION['SESSION_LOGIN']);
-      $this->redirect(URL_BASE . "login");
+      try {
+         unset($_SESSION['SESSION_LOGIN']);
+         $this->redirect(URL_BASE . "login");
+      } catch (\Throwable $th) {
+         setFlash('error', 'Erro interno: ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'login');
+      }
    }
 }

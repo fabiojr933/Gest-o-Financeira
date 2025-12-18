@@ -23,20 +23,35 @@ class DespesaController extends Controller
    }
    public function index()
    {
-      $dados['dados'] = $this->dao->despesaAll($this->uuid);
-      $dados["view"]       = "despesa/index";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->despesaAll($this->uuid);
+         $dados["view"]       = "despesa/index";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'despesa/index');
+      }
    }
    public function novo()
    {
-      $dados["view"]       = "despesa/novo";
-      $this->load("template", $dados);
+      try {
+         $dados["view"]       = "despesa/novo";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'despesa/index');
+      }
    }
    public function editar($id)
    {
-      $dados['dados'] = $this->dao->despesaId($id);
-      $dados["view"]       = "despesa/editar";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->despesaId($id);
+         $dados["view"]       = "despesa/editar";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'despesa/index');
+      }
    }
    public function salvar()
    {
@@ -48,12 +63,12 @@ class DespesaController extends Controller
          $despesa->ativo      = 'S';
          $despesa->natureza = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
 
-         // dd($despesa);
+
          if (isVazio($despesa->nome) || isVazio($despesa->ativo)) {
             setFlash('error', 'Preencha todos os campos!');
             $this->redirect(URL_BASE . 'despesa/novo');
          }
-         //  dd($despesa);
+
          $existe = $this->dao->existe($despesa);
          if ($existe) {
             setFlash('error', 'Já existe despesa cadastrado com esse nome!');
@@ -96,6 +111,12 @@ class DespesaController extends Controller
          if (isVazio($id)) {
             setFlash('error', 'Precisa informar um ID !');
             $this->redirect(URL_BASE . 'despesa/index/');
+         }
+
+         $existe = $this->dao->existeMovimento($id);
+         if ($existe) {
+            setFlash('error', 'Esta despesa não pode ser excluída porque já possui movimentações registradas. Se preferir, você pode desativá-la.');
+            $this->redirect(URL_BASE . 'despesa/index');
          }
 
          $this->dao->excluir($id);

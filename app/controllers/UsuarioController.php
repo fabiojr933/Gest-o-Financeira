@@ -25,20 +25,35 @@ class UsuarioController extends Controller
    }
    public function index()
    {
-      $dados['dados'] = $this->dao->usuarioAll($this->uuid);
-      $dados["view"]       = "usuario/index";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->usuarioAll($this->uuid);
+         $dados["view"]       = "usuario/index";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'usuario/index');
+      }
    }
    public function novo()
    {
-      $dados["view"]       = "usuario/novo";
-      $this->load("template", $dados);
+      try {
+         $dados["view"]       = "usuario/novo";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'usuario/index');
+      }
    }
    public function editar($id)
    {
-      $dados['dados'] = $this->dao->usuarioId($id);
-      $dados["view"]       = "usuario/editar";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->usuarioId($id);
+         $dados["view"]       = "usuario/editar";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'usuario/index');
+      }
    }
    public function salvar()
    {
@@ -89,13 +104,18 @@ class UsuarioController extends Controller
    }
    public function excluir($id)
    {
-      try {         
+      try {
          if (isVazio($id)) {
             setFlash('error', 'Precisa informar um ID !');
             $this->redirect(URL_BASE . 'usuario/index/');
          }
-         if($id == $this->id_usuario_sessao){
-              throw new InvalidArgumentException("Você não pode excluir esse usuario, você esta logando com ele");
+         $existe = $this->dao->existeMovimento($id);
+         if ($existe) {
+            setFlash('error', 'Este usuario não pode ser excluída porque já possui movimentações registradas. Se preferir, você pode desativá-la.');
+            $this->redirect(URL_BASE . 'usuario/index');
+         }
+         if ($id == $this->id_usuario_sessao) {
+            throw new InvalidArgumentException("Você não pode excluir esse usuario, você esta logando com ele");
          }
          $this->dao->excluir($id);
          setFlash('success', 'Usuario excluido  com sucesso!');

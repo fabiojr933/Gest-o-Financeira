@@ -20,20 +20,35 @@ class FornecedorController extends Controller
    }
    public function index()
    {
-      $dados['dados'] = $this->dao->fornecedorAll($this->uuid);
-      $dados["view"]       = "fornecedor/index";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->fornecedorAll($this->uuid);
+         $dados["view"]       = "fornecedor/index";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'fornecedor/index');
+      }
    }
    public function novo()
    {
-      $dados["view"]       = "fornecedor/novo";
-      $this->load("template", $dados);
+      try {
+         $dados["view"]       = "fornecedor/novo";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'fornecedor/index');
+      }
    }
    public function editar($id)
    {
-      $dados['dados'] = $this->dao->fornecedorId($id);
-      $dados["view"]       = "fornecedor/editar";
-      $this->load("template", $dados);
+      try {
+         $dados['dados'] = $this->dao->fornecedorId($id);
+         $dados["view"]       = "fornecedor/editar";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'fornecedor/index');
+      }
    }
    public function salvar()
    {
@@ -89,6 +104,12 @@ class FornecedorController extends Controller
          if (isVazio($id)) {
             setFlash('error', 'Precisa informar um ID !');
             $this->redirect(URL_BASE . 'fornecedor/index/');
+         }
+
+         $existe = $this->dao->existeMovimento($id);
+         if ($existe) {
+            setFlash('error', 'Este fornecedor não pode ser excluída porque já possui movimentações registradas. Se preferir, você pode desativá-la.');
+            $this->redirect(URL_BASE . 'fornecedor/index');
          }
 
          $this->dao->notFornecedorPadrao($id);

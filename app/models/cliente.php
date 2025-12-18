@@ -117,4 +117,19 @@ class Cliente extends Model
             throw new InvalidArgumentException("Você não pode excluir o Cliente padrão, voce pode desativar!.");
         }
     }
+    public function existeMovimento(int $id): bool
+    {
+        if (isVazio($id)) {
+            throw new InvalidArgumentException("Você precisa fazer login");
+        }
+
+        $sql = 'SELECT COUNT(l.id) AS total FROM contas_receber l join clientes c on l.id_cliente = c.id
+                        WHERE c.id = :id';
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_OBJ);
+        return $result->total;
+    }
 }

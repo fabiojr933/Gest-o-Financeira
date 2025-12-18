@@ -23,8 +23,8 @@
 
 
         <div class="card-footer">
-          <h3 class="card-title">Lista de lançamentos</h3>
-          <nav class="main-header navbar navbar-expand">
+          <h3 class="card-title">Lista de contas a pagar aberta</h3>
+         <!--  <nav class="main-header navbar navbar-expand">
             <ul class="navbar-nav ml-auto d-flex align-items-center" style="gap: 8px;">
               <form action="<?php echo URL_BASE ?>lancamento/index" method="post" class="d-flex align-items-center" style="gap: 8px;">
                <input type="date" value="<?php echo $datas['inicio'] ?>" name="inicio" class="form-control form-control-sm" required>
@@ -32,7 +32,7 @@
                 <button type="submit" class="btn btn-primary btn-sm">Carregar</button>
               </form>
             </ul>
-          </nav>
+          </nav> -->
         </div>
 
 
@@ -42,39 +42,51 @@
             <thead>
               <tr>
                 <th>Descricao</th>
-                <th>Valor</th>
-                <th>Data</th>
-                <th>Tipo</th>
+                <th>Data emissao</th>
+                <th>Data vencimento</th>
+                <th>status</th>
+                <th>Parcela</th>
+                <th>valor</th>
+                <th>fornecedor</th>
+                <th>conta</th>
                 <th style="width: 80px;">Ações</th>
               </tr>
             </thead>
             <tbody>
               <?php if (!empty($dados) && is_array($dados)) { ?>
 
-                <?php foreach ($dados as $lancamento) { ?>
+                <?php foreach ($dados as $pagar) { ?>
                   <tr>
-                    <td><?= $lancamento->descricao ?? '' ?></td>
-                    <td>
-                      <?= isset($lancamento->valor)
-                        ? 'R$ ' . number_format($lancamento->valor, 2, ',', '.')
+                    <td><?= $pagar->descricao ?? '' ?></td>
+                     <td>
+                      <?= !empty($pagar->data_emissao)
+                        ? date('d/m/Y', strtotime($pagar->data_emissao))
                         : '' ?>
                     </td>
-                    <td>
-                      <?= !empty($lancamento->data)
-                        ? date('d/m/Y', strtotime($lancamento->data))
+                     <td>
+                      <?= !empty($pagar->data_vencimento)
+                        ? date('d/m/Y', strtotime($pagar->data_vencimento))
                         : '' ?>
                     </td>
-
-                    <td>
-                      <span class="badge <?= ($lancamento->tipo ?? '') === 'CREDITO' ? 'bg-primary' : 'bg-danger' ?>">
-                        <?= ($lancamento->tipo ?? '') === 'CREDITO' ? 'CREDITO' : 'DEBITO' ?>
+                     <td>
+                      <span class="badge bg-danger">
+                        <?= $pagar->status  ?>
                       </span>
                     </td>
+                     <td><?= $pagar->numero_parcela ?? '' ?></td>
                     <td>
-                      <a href="/lancamento/visualizar/<?= $lancamento->id ?>" class="btn btn-sm btn-success">
-                        <i class="fas fa-eye"></i>
+                      <?= isset($pagar->valor)
+                        ? 'R$ ' . number_format($pagar->valor, 2, ',', '.')
+                        : '' ?>
+                    </td>
+                    <td><?= $pagar->fornecedor ?? '' ?></td>
+                     <td><?= $pagar->conta ?? '' ?></td>
+                   
+                    <td>
+                      <a href="/pagar/pagamento/<?= $pagar->id ?>" class="btn btn-sm btn-success">
+                       <i class="fas fa-money-bill"></i>
                       </a>
-                      <a href="/lancamento/excluir/<?= $lancamento->id ?>" class="btn btn-sm btn-danger"
+                      <a href="/pagar/excluir/<?= $pagar->id ?>" class="btn btn-sm btn-danger"
                         onclick="return confirm('Tem certeza que deseja excluir?')">
                         <i class="fas fa-trash-alt"></i>
                       </a>

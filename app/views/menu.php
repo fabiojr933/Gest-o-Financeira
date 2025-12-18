@@ -123,13 +123,13 @@
                     <ul class="nav nav-treeview" style="margin-left: 10px;">
 
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>pagar/novo" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Novo Lançamento</p>
                             </a>
                         </li>   
                          <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>pagar/aberta" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Em Aberto</p>
                             </a>
@@ -169,7 +169,7 @@
                             </a>
                         </li>   
                          <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Em Aberto</p>
                             </a>
@@ -243,3 +243,5 @@
         </nav>
     </div>
 </aside>
+
+
