@@ -22,19 +22,23 @@
         <?php endif; ?>
 
 
-        <div class="card-footer">
-          <h3 class="card-title">Lista de lançamentos</h3>
-          <nav class="main-header navbar navbar-expand">
-            <ul class="navbar-nav ml-auto d-flex align-items-center" style="gap: 8px;">
-              <form action="<?php echo URL_BASE ?>lancamento/index" method="post" class="d-flex align-items-center" style="gap: 8px;">
-               <input type="date" value="<?php echo $datas['inicio'] ?>" name="inicio" class="form-control form-control-sm" required>
-            <input type="date" value="<?php echo $datas['fim'] ?>" name="fim" class="form-control form-control-sm" required>
-                <button type="submit" class="btn btn-primary btn-sm">Carregar</button>
-              </form>
-            </ul>
-          </nav>
-        </div>
-
+        <section class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h3 class="card-title">Lista de lançamentos</h3>
+              </div>
+              <div class="col-sm-6">
+                <form ction="<?php echo URL_BASE ?>lancamento/index" method="post" class="form-inline justify-content-md-end">
+                  <label class="mr-2 mb-2 mb-sm-0"><strong>Pesquisa por data:</strong></label>
+                  <input type="date" value="<?php echo $datas['inicio'] ?>" name="inicio" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                  <input type="date" value="<?php echo $datas['fim'] ?>" name="fim" class="form-control form-control-sm mr-2 mb-2 mb-sm-0" required>
+                  <button type="submit" class="btn btn-primary btn-sm mb-2 mb-sm-0">Carregar</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
 
         <!-- /.card-header -->
         <div class="card-body">

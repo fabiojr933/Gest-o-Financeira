@@ -38,18 +38,18 @@
 
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example1" class="table table-striped table-sm">
+          <table id="tabelaContas" class="table table-striped table-sm">
             <thead>
               <tr>
+                <th>fornecedor</th>
                 <th>Descricao</th>
                 <th>Data emissao</th>
                 <th>Data vencimento</th>
                 <th>status</th>
                 <th>Parcela</th>
-                <th>valor</th>
-                <th>fornecedor</th>
+                <th>valor</th>               
                 <th>conta</th>
-                <th style="width: 80px;">Ações</th>
+                <th style="width: 100px;">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -57,6 +57,7 @@
 
                 <?php foreach ($dados as $pagar) { ?>
                   <tr>
+                    <td><?= $pagar->fornecedor ?? '' ?></td>
                     <td><?= $pagar->descricao ?? '' ?></td>
                      <td>
                       <?= !empty($pagar->data_emissao)
@@ -78,11 +79,13 @@
                       <?= isset($pagar->valor)
                         ? 'R$ ' . number_format($pagar->valor, 2, ',', '.')
                         : '' ?>
-                    </td>
-                    <td><?= $pagar->fornecedor ?? '' ?></td>
+                    </td>                    
                      <td><?= $pagar->conta ?? '' ?></td>
                    
                     <td>
+                      <a href="/pagar/visualizar/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-primary">
+                      <i class="fas fa-eye"></i>
+                      </a>
                       <a href="/pagar/pagamento/<?= $pagar->id ?>" class="btn btn-sm btn-success">
                        <i class="fas fa-money-bill"></i>
                       </a>

@@ -101,7 +101,7 @@ class PagarController extends Controller
       }
    }
    public function aberta()
-   {
+   {    
       try {
          $dados['dados'] = $this->daoPagar->contasAberta($this->uuid);
          $dados["view"]       = "pagar/aberta";
@@ -111,4 +111,17 @@ class PagarController extends Controller
          $this->redirect(URL_BASE . 'pagar/novo');
       }
    }
+     public function visualizar($id)
+   {    
+      try {
+         $dados['dados'] = $this->daoPagar->contasAberta($this->uuid, $id);       
+        
+         $dados["view"]       = "pagar/visualizar";
+         $this->load("template", $dados);
+      } catch (\Throwable $th) {
+         setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
+         $this->redirect(URL_BASE . 'pagar/novo');
+      }
+   }
+  
 }

@@ -64,23 +64,38 @@ class Pagar extends Model
         }
         return $this->db->lastInsertId();
     }
-    public function contasAberta($uuid)
+    public function contasAberta($uuid, $id = null)
     {
-        $sql = 'SELECT p.id, p.descricao, p.data_emissao, c.numero_parcela, c.valor, c.data_vencimento, c.status, f.nome as fornecedor, h.nome as conta
-            from contas_pagar p 
-            join contas_pagar_parcelas c on p.id = c.id_conta_pagar
-            join fornecedores f on p.id_fornecedor = f.id
-            join contas h on c.id_conta = h.id
-            WHERE c.data_vencimento > CURRENT_DATE
-            and p.uuid = :uuid
-            and  c.status = :status';
+        $sql = 'SELECT p.id, p.descricao, p.data_emissao, c.numero_parcela,
+            c.valor, c.data_vencimento, c.status, f.nome AS fornecedor,
+            h.nome AS conta, c.id as id_parcela, u.nome as usuario
+        FROM contas_pagar p INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
+        INNER JOIN fornecedores f ON p.id_fornecedor = f.id
+        INNER JOIN contas h ON c.id_conta = h.id
+        INNER JOIN usuarios u ON u.id = p.id_usuario
+        WHERE c.data_vencimento > CURRENT_DATE
+          AND p.uuid = :uuid
+          AND c.status = :status';
+
+        if (!empty($id)) {
+            $sql .= ' AND c.id = :id';
+        }
+
         $qry = $this->db->prepare($sql);
 
-        $qry->bindValue(":uuid", $uuid, PDO::PARAM_STR);
-        $qry->bindValue(":status", 'ABERTO');
+        $qry->bindValue(':uuid', $uuid, PDO::PARAM_STR);
+        $qry->bindValue(':status', 'ABERTO', PDO::PARAM_STR);
+
+        if (!empty($id)) {
+            $qry->bindValue(':id', $id, PDO::PARAM_INT);
+        }
+
         $qry->execute();
 
-        $result = $qry->fetchAll(\PDO::FETCH_OBJ);
-        return $result ?: null;
+        if (!empty($id)) {
+            return $qry->fetch(\PDO::FETCH_OBJ) ?: null;
+        } else {
+            return $qry->fetchAll(\PDO::FETCH_OBJ) ?: null;
+        }
     }
 }
