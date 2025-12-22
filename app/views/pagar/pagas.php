@@ -23,7 +23,7 @@
 
 
         <div class="card-footer">
-          <h3 class="card-title">Lista de contas a pagar aberta</h3>
+          <h3 class="card-title">Lista de contas pagas</h3>
           <!--  <nav class="main-header navbar navbar-expand">
             <ul class="navbar-nav ml-auto d-flex align-items-center" style="gap: 8px;">
               <form action="<?php echo URL_BASE ?>lancamento/index" method="post" class="d-flex align-items-center" style="gap: 8px;">
@@ -70,7 +70,7 @@
                         : '' ?>
                     </td>
                     <td>
-                      <span class="badge bg-danger">
+                      <span class="badge bg-primary">
                         <?= $pagar->status  ?>
                       </span>
                     </td>
@@ -89,21 +89,16 @@
                         title="Visualizar parcela">
                         <i class="fas fa-eye"></i>
                       </a>
-                      <a href="/pagar/pagar/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-success"
-                        class="btn btn-sm btn-primary"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Pagar">
-                        <i class="fas fa-money-bill"></i>
-                      </a>
-                      <a href="/pagar/excluir/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-danger"
-                        onclick="return confirm('Tem certeza que deseja excluir?')"
-                        class="btn btn-sm btn-primary"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Excluir">
-                        <i class="fas fa-trash-alt"></i>
-                      </a>
+                      <form action="/pagar/cancelarPagamento"
+                        method="post"
+                        class="d-inline">
+                        <input type="hidden" name="id_parcela" value="<?= $pagar->id_parcela ?>" />
+                        <button type="submit"
+                          class="btn btn-sm btn-success"
+                          title="Cancelar pagamento"
+                          onclick="return confirm('Tem certeza que deseja cancelar o pagamento?')">
+                          <i class="fas fa-times"></i>
+                        </button>
                     </td>
                   </tr>
                 <?php } ?>
@@ -111,7 +106,7 @@
               <?php } else { ?>
                 <td>
                   <tr>
-                    <td colspan="9" class="text-center text-muted">Nenhum registro encontrado.</td>
+                    <td colspan="9" class="text-center text-muted">Nenhum registro encontrado.
                   </tr>
                 </td>
               <?php } ?>

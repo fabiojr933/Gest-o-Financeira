@@ -19,13 +19,13 @@ class PagamentoController extends Controller
          $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
-      $this->dao = new Pagamento();
+      $this->dao  = new Pagamento();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->pagamentoAll($this->uuid);
-         $dados["view"]       = "pagamento/index";
+         $dados["view"]  = "pagamento/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -35,7 +35,7 @@ class PagamentoController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "pagamento/novo";
+         $dados["view"] = "pagamento/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -46,7 +46,7 @@ class PagamentoController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->pagamentoId($id);
-         $dados["view"]       = "pagamento/editar";
+         $dados["view"]  = "pagamento/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -57,10 +57,10 @@ class PagamentoController extends Controller
    {
       try {
 
-         $pagamento = new \stdClass();
-         $pagamento->uuid       = $this->uuid;
-         $pagamento->nome       = $_POST['nome'];
-         $pagamento->ativo      = 'S';
+         $pagamento         = new \stdClass();
+         $pagamento->uuid   = $this->uuid;
+         $pagamento->nome   = $_POST['nome'];
+         $pagamento->ativo  = 'S';
 
          if (isVazio($pagamento->nome) || isVazio($pagamento->ativo)) {
             setFlash('error', 'Preencha todos os campos!');
@@ -84,9 +84,9 @@ class PagamentoController extends Controller
    public function atualizar()
    {
       try {
-         $pagamento = new \stdClass();
-         $pagamento->nome       = $_POST['nome'];
-         $pagamento->ativo      =  $_POST['ativo'];
+         $pagamento           = new \stdClass();
+         $pagamento->nome     = $_POST['nome'];
+         $pagamento->ativo    =  $_POST['ativo'];
          $id                  =  $_POST['id'];
 
          if (isVazio($pagamento->nome) || isVazio($pagamento->ativo)) {

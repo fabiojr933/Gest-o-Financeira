@@ -19,13 +19,13 @@ class DespesaController extends Controller
          $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
-      $this->dao = new Despesa();
+      $this->dao  = new Despesa();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->despesaAll($this->uuid);
-         $dados["view"]       = "despesa/index";
+         $dados["view"]  = "despesa/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -35,7 +35,7 @@ class DespesaController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "despesa/novo";
+         $dados["view"] = "despesa/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -46,7 +46,7 @@ class DespesaController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->despesaId($id);
-         $dados["view"]       = "despesa/editar";
+         $dados["view"]  = "despesa/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -57,11 +57,11 @@ class DespesaController extends Controller
    {
       try {
 
-         $despesa = new \stdClass();
+         $despesa             = new \stdClass();
          $despesa->uuid       = $this->uuid;
          $despesa->nome       = $_POST['nome'];
          $despesa->ativo      = 'S';
-         $despesa->natureza = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
+         $despesa->natureza   = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
 
 
          if (isVazio($despesa->nome) || isVazio($despesa->ativo)) {
@@ -86,12 +86,12 @@ class DespesaController extends Controller
    public function atualizar()
    {
       try {
-         $tipo = isset($_POST['natureza']) ? $_POST['natureza'] : 0;
-         $despesa = new \stdClass();
-         $despesa->nome       = $_POST['nome'];
-         $despesa->ativo      =  $_POST['ativo'];
-         $id                  =  $_POST['id'];
-         $despesa->natureza       = $tipo == '1' ? 'FIXO' : 'VARIAVEL';
+         $tipo               = isset($_POST['natureza']) ? $_POST['natureza'] : 0;
+         $despesa            = new \stdClass();
+         $despesa->nome      = $_POST['nome'];
+         $despesa->ativo     =  $_POST['ativo'];
+         $id                 =  $_POST['id'];
+         $despesa->natureza  = $tipo == '1' ? 'FIXO' : 'VARIAVEL';
 
          if (isVazio($despesa->nome) || isVazio($despesa->ativo)) {
             setFlash('error', 'Preencha todos os campos obrigatorios!');

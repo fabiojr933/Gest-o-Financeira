@@ -16,13 +16,13 @@ class ClienteController extends Controller
          $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
-      $this->dao = new Cliente();
+      $this->dao  = new Cliente();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->clienteAll($this->uuid);
-         $dados["view"]       = "cliente/index";
+         $dados["view"]  = "cliente/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -32,7 +32,7 @@ class ClienteController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "cliente/novo";
+         $dados["view"] = "cliente/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -43,7 +43,7 @@ class ClienteController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->clienteId($id);
-         $dados["view"]       = "cliente/editar";
+         $dados["view"]  = "cliente/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -54,10 +54,10 @@ class ClienteController extends Controller
    {
       try {
 
-         $cliente = new \stdClass();
-         $cliente->uuid       = $this->uuid;
-         $cliente->nome       = $_POST['nome'];
-         $cliente->ativo      = 'S';
+         $cliente          = new \stdClass();
+         $cliente->uuid    = $this->uuid;
+         $cliente->nome    = $_POST['nome'];
+         $cliente->ativo   = 'S';
 
          if (isVazio($cliente->nome) || isVazio($cliente->ativo)) {
             setFlash('error', 'Preencha todos os campos!');
@@ -81,10 +81,10 @@ class ClienteController extends Controller
    public function atualizar()
    {
       try {
-         $cliente = new \stdClass();
-         $cliente->nome       = $_POST['nome'];
-         $cliente->ativo      =  $_POST['ativo'];
-         $id                  =  $_POST['id'];
+         $cliente          = new \stdClass();
+         $cliente->nome    = $_POST['nome'];
+         $cliente->ativo   =  $_POST['ativo'];
+         $id               =  $_POST['id'];
 
          if (isVazio($cliente->nome) || isVazio($cliente->ativo)) {
             setFlash('error', 'Preencha todos os campos obrigatorios!');

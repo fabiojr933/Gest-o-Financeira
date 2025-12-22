@@ -13,21 +13,22 @@ class UsuarioController extends Controller
    private $uuid;
    private $dao;
    private $id_usuario_sessao;
+
    public function __construct()
    {
       $usuario = $_SESSION['SESSION_LOGIN'] ?? null;
       if (!$usuario) {
          $this->redirect(URL_BASE . 'login');
       }
-      $this->uuid = $usuario->uuid;
+      $this->uuid              = $usuario->uuid;
       $this->id_usuario_sessao = $usuario->id;
-      $this->dao = new Usuario();
+      $this->dao               = new Usuario();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->usuarioAll($this->uuid);
-         $dados["view"]       = "usuario/index";
+         $dados["view"]  = "usuario/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -37,7 +38,7 @@ class UsuarioController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "usuario/novo";
+         $dados["view"] = "usuario/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -48,7 +49,7 @@ class UsuarioController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->usuarioId($id);
-         $dados["view"]       = "usuario/editar";
+         $dados["view"]  = "usuario/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -58,7 +59,7 @@ class UsuarioController extends Controller
    public function salvar()
    {
       try {
-         $usuario = new \stdClass();
+         $usuario             = new \stdClass();
          $usuario->uuid       = $this->uuid;
          $usuario->nome       = $_POST['nome'];
          $usuario->email      = $_POST['email'];
@@ -82,7 +83,7 @@ class UsuarioController extends Controller
    public function atualizar()
    {
       try {
-         $usuario = new \stdClass();
+         $usuario             = new \stdClass();
          $usuario->nome       = $_POST['nome'];
          $usuario->email      = $_POST['email'];
          $usuario->senha      = md5($_POST['senha']);

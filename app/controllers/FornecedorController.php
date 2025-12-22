@@ -16,13 +16,13 @@ class FornecedorController extends Controller
          $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
-      $this->dao = new Fornecedor();
+      $this->dao  = new Fornecedor();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->fornecedorAll($this->uuid);
-         $dados["view"]       = "fornecedor/index";
+         $dados["view"]  = "fornecedor/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -32,7 +32,7 @@ class FornecedorController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "fornecedor/novo";
+         $dados["view"] = "fornecedor/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -43,7 +43,7 @@ class FornecedorController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->fornecedorId($id);
-         $dados["view"]       = "fornecedor/editar";
+         $dados["view"]  = "fornecedor/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -54,10 +54,10 @@ class FornecedorController extends Controller
    {
       try {
 
-         $fornecedor = new \stdClass();
-         $fornecedor->uuid       = $this->uuid;
-         $fornecedor->nome       = $_POST['nome'];
-         $fornecedor->ativo      = 'S';
+         $fornecedor          = new \stdClass();
+         $fornecedor->uuid    = $this->uuid;
+         $fornecedor->nome    = $_POST['nome'];
+         $fornecedor->ativo   = 'S';
 
          if (isVazio($fornecedor->nome) || isVazio($fornecedor->ativo)) {
             setFlash('error', 'Preencha todos os campos!');
@@ -81,10 +81,10 @@ class FornecedorController extends Controller
    public function atualizar()
    {
       try {
-         $fornecedor = new \stdClass();
-         $fornecedor->nome       = $_POST['nome'];
-         $fornecedor->ativo      =  $_POST['ativo'];
-         $id                  =  $_POST['id'];
+         $fornecedor         = new \stdClass();
+         $fornecedor->nome   = $_POST['nome'];
+         $fornecedor->ativo  =  $_POST['ativo'];
+         $id                 =  $_POST['id'];
 
          if (isVazio($fornecedor->nome) || isVazio($fornecedor->ativo)) {
             setFlash('error', 'Preencha todos os campos obrigatorios!');

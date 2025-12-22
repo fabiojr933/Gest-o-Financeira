@@ -19,13 +19,13 @@ class ReceitaController extends Controller
          $this->redirect(URL_BASE . 'login');
       }
       $this->uuid = $usuario->uuid;
-      $this->dao = new Receita();
+      $this->dao  = new Receita();
    }
    public function index()
    {
       try {
          $dados['dados'] = $this->dao->receitaAll($this->uuid);
-         $dados["view"]       = "receita/index";
+         $dados["view"]  = "receita/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -35,7 +35,7 @@ class ReceitaController extends Controller
    public function novo()
    {
       try {
-         $dados["view"]       = "receita/novo";
+         $dados["view"] = "receita/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -46,7 +46,7 @@ class ReceitaController extends Controller
    {
       try {
          $dados['dados'] = $this->dao->receitaId($id);
-         $dados["view"]       = "receita/editar";
+         $dados["view"]  = "receita/editar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -57,11 +57,11 @@ class ReceitaController extends Controller
    {
       try {
 
-         $receita = new \stdClass();
+         $receita             = new \stdClass();
          $receita->uuid       = $this->uuid;
          $receita->nome       = $_POST['nome'];
          $receita->ativo      = 'S';
-         $receita->natureza = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
+         $receita->natureza   = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
 
          if (isVazio($receita->nome) || isVazio($receita->ativo)) {
             setFlash('error', 'Preencha todos os campos!');
@@ -85,11 +85,11 @@ class ReceitaController extends Controller
    public function atualizar()
    {
       try {
-         $receita = new \stdClass();
+         $receita             = new \stdClass();
          $receita->nome       = $_POST['nome'];
          $receita->ativo      =  $_POST['ativo'];
          $id                  =  $_POST['id'];
-         $receita->natureza = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
+         $receita->natureza   = isset($_POST['natureza']) ? 'FIXO' : 'VARIAVEL';
 
          if (isVazio($receita->nome) || isVazio($receita->ativo)) {
             setFlash('error', 'Preencha todos os campos obrigatorios!');

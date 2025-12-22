@@ -23,7 +23,7 @@
 
 
         <div class="card-footer">
-          <h3 class="card-title">Lista de contas a pagar aberta</h3>
+          <h3 class="card-title">Lista de contas vencidas</h3>
           <!--  <nav class="main-header navbar navbar-expand">
             <ul class="navbar-nav ml-auto d-flex align-items-center" style="gap: 8px;">
               <form action="<?php echo URL_BASE ?>lancamento/index" method="post" class="d-flex align-items-center" style="gap: 8px;">
@@ -109,11 +109,13 @@
                 <?php } ?>
 
               <?php } else { ?>
+
                 <td>
                   <tr>
                     <td colspan="9" class="text-center text-muted">Nenhum registro encontrado.</td>
                   </tr>
                 </td>
+
               <?php } ?>
             </tbody>
 

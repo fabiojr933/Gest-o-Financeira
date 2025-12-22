@@ -17,9 +17,9 @@ class Pagamento extends Model
 
         $qry = $this->db->prepare($sql);
 
-        $qry->bindValue(":uuid",     $pagamento->uuid);
-        $qry->bindValue(":nome",     $pagamento->nome);
-        $qry->bindValue(":ativo",    $pagamento->ativo);
+        $qry->bindValue(":uuid",  $pagamento->uuid);
+        $qry->bindValue(":nome",  $pagamento->nome);
+        $qry->bindValue(":ativo", $pagamento->ativo);
 
         if (!$qry->execute()) {
             $error = $qry->errorInfo();
@@ -30,7 +30,7 @@ class Pagamento extends Model
 
     public function pagamentoAll($uuid)
     {
-        $sql = 'SELECT * FROM PAGAMENTOS WHERE uuid = :uuid';
+        $sql = "SELECT * FROM PAGAMENTOS WHERE uuid = :uuid";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":uuid", $uuid, PDO::PARAM_STR);
@@ -45,7 +45,7 @@ class Pagamento extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'SELECT * FROM PAGAMENTOS WHERE id = :id';
+        $sql = "SELECT * FROM PAGAMENTOS WHERE id = :id";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":id", $id, PDO::PARAM_INT);
@@ -61,9 +61,9 @@ class Pagamento extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'UPDATE PAGAMENTOS SET 
+        $sql = "UPDATE PAGAMENTOS SET 
                         nome = :nome, ativo = :ativo
-                WHERE id = :id';
+                WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
 
@@ -80,7 +80,7 @@ class Pagamento extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'DELETE FROM PAGAMENTOS WHERE id = :id';
+        $sql = "DELETE FROM PAGAMENTOS WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -93,7 +93,7 @@ class Pagamento extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(*) AS total FROM PAGAMENTOS WHERE nome = :nome and uuid = :uuid';
+        $sql = "SELECT COUNT(*) AS total FROM PAGAMENTOS WHERE nome = :nome and uuid = :uuid";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':nome', $pagamento->nome, PDO::PARAM_STR);
         $stmt->bindValue(':uuid', $pagamento->uuid, PDO::PARAM_STR);
@@ -109,8 +109,8 @@ class Pagamento extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join pagamentos c on l.id_pagamento = c.id
-                        WHERE c.id = :id';
+        $sql = "SELECT COUNT(l.id) AS total FROM lancamentos l join pagamentos c on l.id_pagamento = c.id
+                        WHERE c.id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

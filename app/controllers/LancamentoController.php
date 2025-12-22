@@ -24,11 +24,11 @@ class LancamentoController extends Controller
       if (!$usuario) {
          $this->redirect(URL_BASE . 'login');
       }
-      $this->uuid = $usuario->uuid;
-      $this->daoUsuario = new Usuario();
-      $this->daoPagamento = new Pagamento();
-      $this->daoDespesa = new Despesa();
-      $this->daoReceita = new Receita();
+      $this->uuid          = $usuario->uuid;
+      $this->daoUsuario    = new Usuario();
+      $this->daoPagamento  = new Pagamento();
+      $this->daoDespesa    = new Despesa();
+      $this->daoReceita    = new Receita();
       $this->daoLancamento = new Lancamento();
    }
    public function index()
@@ -54,7 +54,7 @@ class LancamentoController extends Controller
          }
          $dados['datas'] = $datas;
          $dados['dados'] = $this->daoLancamento->lancamentoAll($this->uuid, $datas);
-         $dados["view"]       = "lancamento/index";
+         $dados["view"]  = "lancamento/index";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -64,11 +64,11 @@ class LancamentoController extends Controller
    public function novo()
    {
       try {
-         $dados['usuario'] = $this->daoUsuario->usuarioAll($this->uuid);
+         $dados['usuario']   = $this->daoUsuario->usuarioAll($this->uuid);
          $dados['pagamento'] = $this->daoPagamento->pagamentoAll($this->uuid);
-         $dados['despesa'] = $this->daoDespesa->despesaAll($this->uuid);
-         $dados['receita'] = $this->daoReceita->receitaAll($this->uuid);
-         $dados["view"]       = "lancamento/novo";
+         $dados['despesa']   = $this->daoDespesa->despesaAll($this->uuid);
+         $dados['receita']   = $this->daoReceita->receitaAll($this->uuid);
+         $dados["view"]      = "lancamento/novo";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());
@@ -78,17 +78,17 @@ class LancamentoController extends Controller
    public function salvar()
    {
       try {
-         $valor = str_replace(',', '.', $_POST['valor']);
-         $valor = (float) $valor;
-         $lancamento = new \stdClass();
-         $lancamento->descricao = $_POST['descricao'];
+         $valor                    = str_replace(',', '.', $_POST['valor']);
+         $valor                    = (float) $valor;
+         $lancamento               = new \stdClass();
+         $lancamento->descricao    = $_POST['descricao'];
          $lancamento->id_pagamento = $_POST['id_pagamento'];
-         $lancamento->data = $_POST['data'];
-         $lancamento->valor = $valor;
-         $lancamento->id_usuario = $_POST['id_usuario'];
-         $lancamento->tipo = $_POST['tipo'];
-         $lancamento->id_conta = $_POST['id_conta'];
-         $lancamento->uuid = $this->uuid;
+         $lancamento->data         = $_POST['data'];
+         $lancamento->valor        = $valor;
+         $lancamento->id_usuario   = $_POST['id_usuario'];
+         $lancamento->tipo         = $_POST['tipo'];
+         $lancamento->id_conta     = $_POST['id_conta'];
+         $lancamento->uuid         = $this->uuid;
 
          if (isVazio($lancamento->descricao) || isVazio($lancamento->tipo || $lancamento->id_conta)) {
             setFlash('error', 'Preencha todos os campos!');

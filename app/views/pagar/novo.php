@@ -21,12 +21,6 @@
           </div>
         <?php endif; ?>
 
-
-        <div class="card-footer clearfix">
-          <a href="<?php echo URL_BASE ?>pagar/index" class="btn btn-primary btn-sm float-right"><i class="fas fa-arrow-left"></i> Voltar</a>
-        </div>
-
-
         <div class="col-md-12">
           <div class="card card-primary">
             <div class="card-header">

@@ -13,7 +13,7 @@ class LoginController extends Controller
    private $util;
    public function __construct()
    {
-      $this->dao = new Usuario();
+      $this->dao  = new Usuario();
       $this->util = new UtilService();
    }
    public function index()
@@ -23,15 +23,15 @@ class LoginController extends Controller
    }
    public function cadastrar()
    {
-      $dados["view"]       = "cadastrar";
+      $dados["view"] = "cadastrar";
       $this->load("cadastrar", $dados);
    }
 
    public function criarUsuario()
    {
       try {
-         $uuid = Uuid::uuid4();
-         $usuario = new \stdClass();
+         $uuid                = Uuid::uuid4();
+         $usuario             = new \stdClass();
          $usuario->uuid       = $uuid->toString();
          $usuario->nome       = $_POST['nome'];
          $usuario->email      = $_POST['email'];
@@ -61,10 +61,10 @@ class LoginController extends Controller
    public function autenticar()
    {
       try {
-         $usuario = new \stdClass();
+         $usuario        = new \stdClass();
          $usuario->email = $_POST["email"];
          $usuario->senha = md5($_POST["senha"]);
-         $dados = $this->dao->autenticar($usuario);
+         $dados          = $this->dao->autenticar($usuario);
 
          if (empty($dados)) {
             setFlash('error', 'Usuário não encontrado!');

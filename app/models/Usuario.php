@@ -10,13 +10,13 @@ class Usuario extends Model
 {
     public function criarUsuario($usuario)
     {
-        $sql = "INSERT INTO USUARIOS 
-            SET uuid = :uuid, 
-                nome = :nome, 
-                email = :email, 
-                senha = :senha, 
+        $sql = "INSERT INTO USUARIOS SET 
+                uuid     = :uuid, 
+                nome     = :nome, 
+                email    = :email, 
+                senha    = :senha, 
                 telefone = :telefone, 
-                ativo = :ativo";
+                ativo    = :ativo";
 
         $qry = $this->db->prepare($sql);
 
@@ -36,7 +36,7 @@ class Usuario extends Model
 
     public function autenticar($usuario)
     {
-        $sql = 'SELECT * FROM USUARIOS WHERE email = :email LIMIT 1';
+        $sql = "SELECT * FROM USUARIOS WHERE email = :email LIMIT 1";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":email", $usuario->email);
@@ -47,7 +47,7 @@ class Usuario extends Model
 
     public function usuarioAll($uuid)
     {
-        $sql = 'SELECT * FROM USUARIOS WHERE uuid = :uuid';
+        $sql = "SELECT * FROM USUARIOS WHERE uuid = :uuid";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":uuid", $uuid, PDO::PARAM_STR);
@@ -62,7 +62,7 @@ class Usuario extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'SELECT * FROM USUARIOS WHERE id = :id';
+        $sql = "SELECT * FROM USUARIOS WHERE id = :id";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":id", $id, PDO::PARAM_INT);
@@ -78,9 +78,13 @@ class Usuario extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'UPDATE USUARIOS SET 
-                        nome = :nome, email = :email, telefone = :telefone, senha = :senha, ativo = :ativo
-            WHERE id = :id';
+       $sql = "UPDATE USUARIOS SET 
+            nome     = :nome, 
+            email    = :email, 
+            telefone = :telefone, 
+            senha    = :senha, 
+            ativo    = :ativo
+        WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
 
@@ -100,7 +104,7 @@ class Usuario extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'DELETE FROM USUARIOS WHERE id = :id';
+        $sql = "DELETE FROM USUARIOS WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -114,8 +118,8 @@ class Usuario extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join usuarios c on l.id_usuario = c.id
-                        WHERE c.id = :id';
+        $sql = "SELECT COUNT(l.id) AS total FROM lancamentos l join usuarios c on l.id_usuario = c.id
+                        WHERE c.id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

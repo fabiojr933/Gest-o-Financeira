@@ -10,12 +10,12 @@ class Despesa extends Model
 {
     public function criarDespesas($despesa)
     {
-        $sql = "INSERT INTO CONTAS 
-            SET uuid = :uuid, 
-                nome = :nome, 
-                ativo = :ativo,
-                natureza = :natureza,
-                tipo = 'DESPESA'";
+        $sql = "INSERT INTO CONTAS SET 
+            uuid     = :uuid, 
+            nome     = :nome, 
+            ativo    = :ativo,
+            natureza = :natureza,
+            tipo     = 'DESPESA'";
 
         $qry = $this->db->prepare($sql);
 
@@ -23,7 +23,6 @@ class Despesa extends Model
         $qry->bindValue(":nome",     $despesa->nome);
         $qry->bindValue(":ativo",    $despesa->ativo);
         $qry->bindValue(":natureza", $despesa->natureza);
-
 
         if (!$qry->execute()) {
             $error = $qry->errorInfo();
@@ -34,7 +33,7 @@ class Despesa extends Model
 
     public function despesaAll($uuid)
     {
-        $sql = 'SELECT * FROM CONTAS WHERE uuid = :uuid and tipo = :tipo';
+        $sql = "SELECT * FROM CONTAS WHERE uuid = :uuid and tipo = :tipo";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":uuid", $uuid, PDO::PARAM_STR);
@@ -50,7 +49,7 @@ class Despesa extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'SELECT * FROM CONTAS WHERE id = :id';
+        $sql = "SELECT * FROM CONTAS WHERE id = :id";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":id", $id, PDO::PARAM_INT);
@@ -66,9 +65,11 @@ class Despesa extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'UPDATE CONTAS SET 
-                        nome = :nome, ativo = :ativo, natureza = :natureza
-                WHERE id = :id';
+        $sql = "UPDATE CONTAS SET 
+            nome     = :nome, 
+            ativo    = :ativo, 
+            natureza = :natureza
+        WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
 
@@ -86,7 +87,7 @@ class Despesa extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'DELETE FROM contas WHERE id = :id';
+        $sql = "DELETE FROM contas WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -99,7 +100,7 @@ class Despesa extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(*) AS total FROM contas WHERE nome = :nome and uuid = :uuid and tipo = :tipo';
+        $sql = "SELECT COUNT(*) AS total FROM contas WHERE nome = :nome and uuid = :uuid and tipo = :tipo";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':nome', $despesa->nome, PDO::PARAM_STR);
         $stmt->bindValue(':uuid', $despesa->uuid, PDO::PARAM_STR);
@@ -115,8 +116,8 @@ class Despesa extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(l.id) AS total FROM lancamentos l join contas c on l.id_conta = c.id
-                        WHERE c.id = :id';
+        $sql = "SELECT COUNT(l.id) AS total FROM lancamentos l join contas c on l.id_conta = c.id
+                    WHERE c.id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();

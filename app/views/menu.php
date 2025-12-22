@@ -135,13 +135,13 @@
                             </a>
                         </li>    
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>pagar/vencida" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Vencidas</p>
                             </a>
                         </li>  
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>pagar/pagas" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Pagas</p>
                             </a>

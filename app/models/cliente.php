@@ -10,16 +10,16 @@ class Cliente extends Model
 {
     public function criarCliente($cliente)
     {
-        $sql = "INSERT INTO CLIENTES 
-            SET uuid = :uuid, 
-                nome = :nome, 
-                ativo = :ativo";
+        $sql = "INSERT INTO CLIENTES SET 
+            uuid  = :uuid, 
+            nome  = :nome, 
+            ativo = :ativo";
 
         $qry = $this->db->prepare($sql);
 
-        $qry->bindValue(":uuid",     $cliente->uuid);
-        $qry->bindValue(":nome",     $cliente->nome);
-        $qry->bindValue(":ativo",    $cliente->ativo);
+        $qry->bindValue(":uuid",  $cliente->uuid);
+        $qry->bindValue(":nome",  $cliente->nome);
+        $qry->bindValue(":ativo", $cliente->ativo);
 
         if (!$qry->execute()) {
             $error = $qry->errorInfo();
@@ -30,7 +30,7 @@ class Cliente extends Model
 
     public function clienteAll($uuid)
     {
-        $sql = 'SELECT * FROM CLIENTES WHERE uuid = :uuid';
+        $sql = "SELECT * FROM CLIENTES WHERE uuid = :uuid";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":uuid", $uuid, PDO::PARAM_STR);
@@ -45,7 +45,7 @@ class Cliente extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'SELECT * FROM CLIENTES WHERE id = :id';
+        $sql = "SELECT * FROM CLIENTES WHERE id = :id";
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(":id", $id, PDO::PARAM_INT);
@@ -61,9 +61,10 @@ class Cliente extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'UPDATE CLIENTES SET 
-                        nome = :nome, ativo = :ativo
-                WHERE id = :id';
+        $sql = "UPDATE CLIENTES SET 
+            nome  = :nome, 
+            ativo = :ativo
+        WHERE id  = :id";
 
         $stmt = $this->db->prepare($sql);
 
@@ -80,7 +81,7 @@ class Cliente extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = 'DELETE FROM CLIENTES WHERE id = :id';
+        $sql = "DELETE FROM CLIENTES WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -93,7 +94,7 @@ class Cliente extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(*) AS total FROM CLIENTES WHERE nome = :nome and uuid = :uuid';
+        $sql = "SELECT COUNT(*) AS total FROM CLIENTES WHERE nome = :nome and uuid = :uuid";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':nome', $cliente->nome, PDO::PARAM_STR);
         $stmt->bindValue(':uuid', $cliente->uuid, PDO::PARAM_STR);
@@ -108,7 +109,7 @@ class Cliente extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT nome FROM CLIENTES WHERE id = :id LIMIT 1';
+        $sql = "SELECT nome FROM CLIENTES WHERE id = :id LIMIT 1";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -123,8 +124,12 @@ class Cliente extends Model
             throw new InvalidArgumentException("Você precisa fazer login");
         }
 
-        $sql = 'SELECT COUNT(l.id) AS total FROM contas_receber l join clientes c on l.id_cliente = c.id
-                        WHERE c.id = :id';
+        $sql = "SELECT 
+            COUNT(l.id) AS total 
+        FROM contas_receber l 
+        INNER JOIN clientes c ON l.id_cliente = c.id
+        WHERE c.id = :id";
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
