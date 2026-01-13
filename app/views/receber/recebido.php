@@ -23,7 +23,7 @@
 
 
         <div class="card-footer">
-          <h3 class="card-title">Lista de contas a pagar aberta</h3>
+          <h3 class="card-title">Lista de contas pagas</h3>
           <!--  <nav class="main-header navbar navbar-expand">
             <ul class="navbar-nav ml-auto d-flex align-items-center" style="gap: 8px;">
               <form action="<?php echo URL_BASE ?>lancamento/index" method="post" class="d-flex align-items-center" style="gap: 8px;">
@@ -41,7 +41,7 @@
           <table id="tabelaContas" class="table table-striped table-sm">
             <thead>
               <tr>
-                <th>Fornecedor</th>
+                <th>Cliente</th>
                 <th>Documento</th>
                 <th>Descricao</th>
                 <th>Data emissao</th>
@@ -56,57 +56,51 @@
             <tbody>
               <?php if (isset($dados) && is_iterable($dados) && count($dados) > 0) { ?>
 
-                <?php foreach ($dados as $pagar) { ?>
+                <?php foreach ($dados as $receber) { ?>
                   <tr>
-                    <td><strong><?= $pagar->fornecedor ?? '' ?></strong></td>
-                    <td><strong>Documento <?= $pagar->id ?? '' ?></strong></td>
-
-                    <td><?= $pagar->descricao ?? '' ?></td>
+                    <td><strong><?= $receber->cliente ?? '' ?></strong></td>
+                    <td><strong>Documento <?= $receber->id ?? '' ?></strong></td>
+                    <td><?= $receber->descricao ?? '' ?></td>
                     <td>
-                      <?= !empty($pagar->data_emissao)
-                        ? date('d/m/Y', strtotime($pagar->data_emissao))
+                      <?= !empty($receber->data_emissao)
+                        ? date('d/m/Y', strtotime($receber->data_emissao))
                         : '' ?>
                     </td>
                     <td>
-                      <?= !empty($pagar->data_vencimento)
-                        ? date('d/m/Y', strtotime($pagar->data_vencimento))
+                      <?= !empty($receber->data_vencimento)
+                        ? date('d/m/Y', strtotime($receber->data_vencimento))
                         : '' ?>
                     </td>
                     <td>
-                      <span class="badge bg-danger">
-                        <?= $pagar->status  ?>
+                      <span class="badge bg-primary">
+                        <?= $receber->status  ?>
                       </span>
                     </td>
-                    <td><?= $pagar->numero_parcela ?? '' ?></td>
+                    <td><?= $receber->numero_parcela ?? '' ?></td>
                     <td>
-                      <?= isset($pagar->valor)
-                        ? 'R$ ' . number_format($pagar->valor, 2, ',', '.')
+                      <?= isset($receber->valor)
+                        ? 'R$ ' . number_format($receber->valor, 2, ',', '.')
                         : '' ?>
                     </td>
-                    <td><?= $pagar->conta ?? '' ?></td>
+                    <td><?= $receber->conta ?? '' ?></td>
 
                     <td>
-                      <a href="/pagar/visualizar/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-primary"
+                      <a href="/receber/visualizar/<?= $receber->id_parcela ?>" class="btn btn-sm btn-primary"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
                         title="Visualizar parcela">
                         <i class="fas fa-eye"></i>
                       </a>
-                      <a href="/pagar/pagar/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-success"
-                        class="btn btn-sm btn-primary"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Pagar">
-                        <i class="fas fa-money-bill"></i>
-                      </a>
-                      <a href="/pagar/excluir/<?= $pagar->id_parcela ?>" class="btn btn-sm btn-danger"
-                        onclick="return confirm('Tem certeza que deseja excluir?')"
-                        class="btn btn-sm btn-primary"
-                        data-bs-toggle="tooltip"
-                        data-bs-placement="top"
-                        title="Excluir">
-                        <i class="fas fa-trash-alt"></i>
-                      </a>
+                      <form action="/receber/cancelarRecebimento"
+                        method="post"
+                        class="d-inline">
+                        <input type="hidden" name="id_parcela" value="<?= $receber->id_parcela ?>" />
+                        <button type="submit"
+                          class="btn btn-sm btn-success"
+                          title="Cancelar recebimento"
+                          onclick="return confirm('Tem certeza que deseja cancelar o recebimento?')">
+                          <i class="fas fa-times"></i>
+                        </button>
                     </td>
                   </tr>
                 <?php } ?>
@@ -114,7 +108,7 @@
               <?php } else { ?>
                 <td>
                   <tr>
-                    <td colspan="9" class="text-center text-muted">Nenhum registro encontrado.</td>
+                    <td colspan="9" class="text-center text-muted">Nenhum registro encontrado.
                   </tr>
                 </td>
               <?php } ?>

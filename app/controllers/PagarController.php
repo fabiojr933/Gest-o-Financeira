@@ -37,6 +37,7 @@ class PagarController extends Controller
    public function novo()
    {
       try {
+         $dados['pagamento']  = $this->daoPagamento->pagamentoAll($this->uuid);
          $dados['usuario']    = $this->daoUsuario->usuarioAll($this->uuid);
          $dados['fornecedor'] = $this->daoFornecedor->fornecedorAll($this->uuid);
          $dados['despesa']    = $this->daoDespesa->despesaAll($this->uuid);
@@ -55,7 +56,7 @@ class PagarController extends Controller
          $pagarDoc->id_fornecedor      = $_POST['id_fornecedor'];
          $pagarDoc->qtde_parcelas      = intval($_POST['parcela']);
          $pagarDoc->parcelado          = $_POST['id_parcelado'];
-         $pagarDoc->valor_total        = $_POST['valor_total'];
+         $pagarDoc->valor_total        = floatval($_POST['valor_total']);
          $pagarDoc->uuid               = $this->uuid;
          $pagarDoc->id_usuario         = $_POST['id_usuario'];
 
@@ -71,7 +72,20 @@ class PagarController extends Controller
 
          $parcelasSeparadas = [];
 
+
+
          for ($i = 0; $i < (int) $pagarDoc->qtde_parcelas; $i++) {
+
+            if ($pagarParc->status === 'ABERTO') {
+
+               $dataPagamento = null;
+               $idPagamento   = null;
+            } else {
+
+               $dataPagamento = $pagarParc->data_vencimento[$i];
+               $idPagamento   = $_POST['pagamento'] ?? null;
+            }
+
             $valorOriginal             = $pagarParc->valor_parcela[$i];
             $valorConvertido           = str_replace(
                ['R$', '.', ','],
@@ -79,14 +93,16 @@ class PagarController extends Controller
                $valorOriginal
             );
             $valorConvertido           = (float) trim($valorConvertido);
-            $parcelasSeparadas[]       = [
-               'id_conta'              => (int) $pagarParc->id_conta,
-               'valor'                 => $valorConvertido,
-               'numero_parcela'        => (int) $pagarParc->parcela[$i],
-               'data_vencimento'       => $pagarParc->data_vencimento[$i],
-               'status'                => $pagarParc->status,
-               'id_conta_pagar'        => (int) $pagarParc->id_conta_pagar,
-               'pago_por'              => $this->nomeUsuario,
+            $parcelasSeparadas[] = [
+               'id_conta'        => (int) $pagarParc->id_conta,
+               'valor'           => $valorConvertido,
+               'numero_parcela'  => (int) $pagarParc->parcela[$i],
+               'data_vencimento' => $pagarParc->data_vencimento[$i],
+               'status'          => $pagarParc->status,
+               'id_conta_pagar'  => (int) $pagarParc->id_conta_pagar,
+               'pago_por'        => $this->nomeUsuario,
+               'data_pagamento'  => $dataPagamento,
+               'id_pagamento'    => $idPagamento,
             ];
          }
 
@@ -136,8 +152,9 @@ class PagarController extends Controller
    public function visualizar($id)
    {
       try {
-         $dados['dados'] = $this->daoPagar->visualizar($this->uuid, $id);
-         $dados["view"]  = "pagar/visualizar";
+         $dados['metedo'] = $_SERVER['HTTP_REFERER'];
+         $dados['dados']  = $this->daoPagar->visualizar($this->uuid, $id);
+         $dados["view"]   = "pagar/visualizar";
          $this->load("template", $dados);
       } catch (\Throwable $th) {
          setFlash('error', 'Ocorreu um erro! ' . $th->getMessage());

@@ -1,197 +1,378 @@
-/*
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` CHAR(36) NOT NULL,
-  `nome` varchar(150) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `senha` varchar(255) NOT NULL,
-  `telefone` varchar(20) DEFAULT NULL,
-  `ativo` char(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_email` (`email`)
-);
+ -- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Tempo de geração: 13/01/2026 às 01:37
+-- Versão do servidor: 10.4.32-MariaDB
+-- Versão do PHP: 8.2.12
 
-CREATE TABLE contas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(150) NOT NULL,
-  tipo ENUM('RECEITA','DESPESA') NOT NULL,
-  natureza ENUM('FIXO','VARIAVEL') NOT NULL,
-  ativo CHAR(1) NOT NULL DEFAULT 'S',
-  data DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  uuid CHAR(36) NOT NULL
-);
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
 
 
-CREATE TABLE `pagamentos` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `financeiro`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `clientes`
+--
 
 CREATE TABLE `clientes` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE `fornecedores` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-);
-
-CREATE TABLE lancamentos (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  descricao VARCHAR(255) NOT NULL,
-  data DATE NOT NULL,
-  valor DECIMAL(10,2) NOT NULL,
-  tipo ENUM('DEBITO','CREDITO') NOT NULL,
-  id_conta INT NOT NULL,
-  id_usuario INT NOT NULL,
-  id_pagamento INT NOT NULL,
-  uuid CHAR(36) NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-  FOREIGN KEY (id_conta) REFERENCES contas(id),
-  FOREIGN KEY (id_pagamento) REFERENCES pagamentos(id),
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)
-);
-
-
-CREATE TABLE contas_pagar (
-  id INT AUTO_INCREMENT PRIMARY KEY, 
-  descricao VARCHAR(200) NOT NULL,
-  valor_total DECIMAL(10,2) NOT NULL,
-  qtde_parcelas INT NOT NULL,
-  parcelado CHAR(1) NOT NULL, -- S / N
-  data_emissao DATETIME DEFAULT CURRENT_TIMESTAMP,
-  uuid CHAR(36) NOT NULL,
-  id_usuario INT NOT NULL,
-  id_fornecedor INT NULL, 
-  FOREIGN KEY (id_fornecedor) REFERENCES fornecedores(id),
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id)  
-);
-
-CREATE TABLE contas_pagar_parcelas (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  id_conta_pagar INT NOT NULL, 
-  id_conta INT NOT NULL,
-  id_pagamento INT NULL,
-  numero_parcela INT NOT NULL,   
-  valor DECIMAL(10,2) NOT NULL,
-  data_vencimento DATE NOT NULL,
-  data_pagamento DATE NULL,
-  pago_por varchar(120) null,
-  status ENUM('ABERTO','PAGO') DEFAULT 'ABERTO',
-  FOREIGN KEY (id_conta) REFERENCES contas(id),
-  FOREIGN KEY (id_conta_pagar) REFERENCES contas_pagar(id),
-  FOREIGN KEY (id_pagamento) REFERENCES pagamentos(id)
-);
-*/
-
--- 1. Tabelas Base (Sem Chaves Estrangeiras)
-CREATE TABLE `usuarios` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` CHAR(36) NOT NULL,
-  `nome` varchar(150) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `senha` varchar(255) NOT NULL,
-  `telefone` varchar(20) DEFAULT NULL,
+  `id` int(11) NOT NULL,
+  `nome` varchar(130) NOT NULL,
+  `uuid` char(36) NOT NULL,
   `ativo` char(1) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_email` (`email`)
-) ENGINE=InnoDB;
+  `data` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `contas`
+--
 
 CREATE TABLE `contas` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `nome` VARCHAR(150) NOT NULL,
-  `tipo` ENUM('RECEITA','DESPESA') NOT NULL,
-  `natureza` ENUM('FIXO','VARIAVEL') NOT NULL,
-  `ativo` CHAR(1) NOT NULL DEFAULT 'S',
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `uuid` CHAR(36) NOT NULL
-) ENGINE=InnoDB;
+  `id` int(11) NOT NULL,
+  `nome` varchar(150) NOT NULL,
+  `tipo` enum('RECEITA','DESPESA') NOT NULL,
+  `natureza` enum('FIXO','VARIAVEL') NOT NULL,
+  `ativo` char(1) NOT NULL DEFAULT 'S',
+  `data` datetime NOT NULL DEFAULT current_timestamp(),
+  `uuid` char(36) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `pagamentos` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
+-- --------------------------------------------------------
 
-CREATE TABLE `clientes` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
-CREATE TABLE `fornecedores` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(130) NOT NULL,  
-  `uuid` CHAR(36) NOT NULL,
-  `ativo` CHAR(1) NOT NULL,
-  `data` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB;
-
--- 2. Tabelas com Relacionamentos (Chaves Estrangeiras)
-CREATE TABLE `lancamentos` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `descricao` VARCHAR(255) NOT NULL,
-  `data` DATE NOT NULL,
-  `valor` DECIMAL(10,2) NOT NULL,
-  `tipo` ENUM('DEBITO','CREDITO') NOT NULL,
-  `id_conta` INT NOT NULL,
-  `id_usuario` INT NOT NULL,
-  `id_pagamento` INT NOT NULL,
-  `uuid` CHAR(36) NOT NULL,
-  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT `fk_lanc_conta` FOREIGN KEY (`id_conta`) REFERENCES `contas` (`id`),
-  CONSTRAINT `fk_lanc_pagto` FOREIGN KEY (`id_pagamento`) REFERENCES `pagamentos` (`id`),
-  CONSTRAINT `fk_lanc_user` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB;
+--
+-- Estrutura para tabela `contas_pagar`
+--
 
 CREATE TABLE `contas_pagar` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY, 
-  `descricao` VARCHAR(200) NOT NULL,
-  `valor_total` DECIMAL(10,2) NOT NULL,
-  `qtde_parcelas` INT NOT NULL,
-  `parcelado` CHAR(1) NOT NULL,
-  `data_emissao` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  `uuid` CHAR(36) NOT NULL,
-  `id_usuario` INT NOT NULL,
-  `id_fornecedor` INT NULL, 
-  CONSTRAINT `fk_pagar_forn` FOREIGN KEY (`id_fornecedor`) REFERENCES `fornecedores` (`id`),
-  CONSTRAINT `fk_pagar_user` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`)  
-) ENGINE=InnoDB;
+  `id` int(11) NOT NULL,
+  `descricao` varchar(200) NOT NULL,
+  `valor_total` decimal(10,2) NOT NULL,
+  `qtde_parcelas` int(11) NOT NULL,
+  `parcelado` char(1) NOT NULL,
+  `data_emissao` datetime DEFAULT current_timestamp(),
+  `uuid` char(36) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `id_fornecedor` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `contas_pagar_parcelas`
+--
 
 CREATE TABLE `contas_pagar_parcelas` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `id_conta_pagar` INT NOT NULL, 
-  `id_conta` INT NOT NULL,
-  `id_pagamento` INT NULL,
-  `numero_parcela` INT NOT NULL,   
-  `valor` DECIMAL(10,2) NOT NULL,
-  `data_vencimento` DATE NOT NULL,
-  `data_pagamento` DATE NULL,
-  `pago_por` VARCHAR(120) NULL,
-  `status` ENUM('ABERTO','PAGO') DEFAULT 'ABERTO',
-  CONSTRAINT `fk_parc_conta` FOREIGN KEY (`id_conta`) REFERENCES `contas` (`id`),
-  CONSTRAINT `fk_parc_principal` FOREIGN KEY (`id_conta_pagar`) REFERENCES `contas_pagar` (`id`),
-  CONSTRAINT `fk_parc_pagto` FOREIGN KEY (`id_pagamento`) REFERENCES `pagamentos` (`id`)
-) ENGINE=InnoDB;
+  `id` int(11) NOT NULL,
+  `id_conta_pagar` int(11) NOT NULL,
+  `id_conta` int(11) NOT NULL,
+  `id_pagamento` int(11) DEFAULT NULL,
+  `numero_parcela` int(11) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `data_vencimento` date NOT NULL,
+  `data_pagamento` date DEFAULT NULL,
+  `pago_por` varchar(120) DEFAULT NULL,
+  `status` enum('ABERTO','PAGO') DEFAULT 'ABERTO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `contas_receber`
+--
+
+CREATE TABLE `contas_receber` (
+  `id` int(11) NOT NULL,
+  `descricao` varchar(200) NOT NULL,
+  `valor_total` decimal(10,2) NOT NULL,
+  `qtde_parcelas` int(11) NOT NULL,
+  `parcelado` char(1) NOT NULL,
+  `data_emissao` datetime DEFAULT current_timestamp(),
+  `uuid` char(36) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `id_cliente` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `contas_receber_parcelas`
+--
+
+CREATE TABLE `contas_receber_parcelas` (
+  `id` int(11) NOT NULL,
+  `id_conta_receber` int(11) NOT NULL,
+  `id_conta` int(11) NOT NULL,
+  `id_pagamento` int(11) DEFAULT NULL,
+  `numero_parcela` int(11) NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `data_vencimento` date NOT NULL,
+  `data_pagamento` date DEFAULT NULL,
+  `recebido_por` varchar(120) DEFAULT NULL,
+  `status` enum('ABERTO','RECEBIDO') DEFAULT 'ABERTO'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `fornecedores`
+--
+
+CREATE TABLE `fornecedores` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(130) NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `ativo` char(1) NOT NULL,
+  `data` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `lancamentos`
+--
+
+CREATE TABLE `lancamentos` (
+  `id` int(11) NOT NULL,
+  `descricao` varchar(255) NOT NULL,
+  `data` date NOT NULL,
+  `valor` decimal(10,2) NOT NULL,
+  `tipo` enum('DEBITO','CREDITO') NOT NULL,
+  `id_conta` int(11) NOT NULL,
+  `id_usuario` int(11) NOT NULL,
+  `id_pagamento` int(11) NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `pagamentos`
+--
+
+CREATE TABLE `pagamentos` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(130) NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `ativo` char(1) NOT NULL,
+  `data` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `id` int(11) NOT NULL,
+  `uuid` char(36) NOT NULL,
+  `nome` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  `telefone` varchar(20) DEFAULT NULL,
+  `ativo` char(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices para tabelas despejadas
+--
+
+--
+-- Índices de tabela `clientes`
+--
+ALTER TABLE `clientes`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `contas`
+--
+ALTER TABLE `contas`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `contas_pagar`
+--
+ALTER TABLE `contas_pagar`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_pagar_forn` (`id_fornecedor`),
+  ADD KEY `fk_pagar_user` (`id_usuario`);
+
+--
+-- Índices de tabela `contas_pagar_parcelas`
+--
+ALTER TABLE `contas_pagar_parcelas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_parc_conta` (`id_conta`),
+  ADD KEY `fk_parc_principal` (`id_conta_pagar`),
+  ADD KEY `fk_parc_pagto` (`id_pagamento`);
+
+--
+-- Índices de tabela `contas_receber`
+--
+ALTER TABLE `contas_receber`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_receber_clin` (`id_cliente`),
+  ADD KEY `fk_receber_user` (`id_usuario`);
+
+--
+-- Índices de tabela `contas_receber_parcelas`
+--
+ALTER TABLE `contas_receber_parcelas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_receber_parc_conta` (`id_conta`),
+  ADD KEY `fk_receber_parc_principal` (`id_conta_receber`),
+  ADD KEY `fk_receber_parc_pagto` (`id_pagamento`);
+
+--
+-- Índices de tabela `fornecedores`
+--
+ALTER TABLE `fornecedores`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `lancamentos`
+--
+ALTER TABLE `lancamentos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_lanc_conta` (`id_conta`),
+  ADD KEY `fk_lanc_pagto` (`id_pagamento`),
+  ADD KEY `fk_lanc_user` (`id_usuario`);
+
+--
+-- Índices de tabela `pagamentos`
+--
+ALTER TABLE `pagamentos`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Índices de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_email` (`email`);
+
+--
+-- AUTO_INCREMENT para tabelas despejadas
+--
+
+--
+-- AUTO_INCREMENT de tabela `clientes`
+--
+ALTER TABLE `clientes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `contas`
+--
+ALTER TABLE `contas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `contas_pagar`
+--
+ALTER TABLE `contas_pagar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `contas_pagar_parcelas`
+--
+ALTER TABLE `contas_pagar_parcelas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `contas_receber`
+--
+ALTER TABLE `contas_receber`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `contas_receber_parcelas`
+--
+ALTER TABLE `contas_receber_parcelas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `fornecedores`
+--
+ALTER TABLE `fornecedores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `lancamentos`
+--
+ALTER TABLE `lancamentos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `pagamentos`
+--
+ALTER TABLE `pagamentos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de tabela `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `contas_pagar`
+--
+ALTER TABLE `contas_pagar`
+  ADD CONSTRAINT `fk_pagar_forn` FOREIGN KEY (`id_fornecedor`) REFERENCES `fornecedores` (`id`),
+  ADD CONSTRAINT `fk_pagar_user` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+
+--
+-- Restrições para tabelas `contas_pagar_parcelas`
+--
+ALTER TABLE `contas_pagar_parcelas`
+  ADD CONSTRAINT `fk_parc_conta` FOREIGN KEY (`id_conta`) REFERENCES `contas` (`id`),
+  ADD CONSTRAINT `fk_parc_pagto` FOREIGN KEY (`id_pagamento`) REFERENCES `pagamentos` (`id`),
+  ADD CONSTRAINT `fk_parc_principal` FOREIGN KEY (`id_conta_pagar`) REFERENCES `contas_pagar` (`id`);
+
+--
+-- Restrições para tabelas `contas_receber`
+--
+ALTER TABLE `contas_receber`
+  ADD CONSTRAINT `fk_receber_clin` FOREIGN KEY (`id_cliente`) REFERENCES `clientes` (`id`),
+  ADD CONSTRAINT `fk_receber_user` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+
+--
+-- Restrições para tabelas `contas_receber_parcelas`
+--
+ALTER TABLE `contas_receber_parcelas`
+  ADD CONSTRAINT `fk_receber_parc_conta` FOREIGN KEY (`id_conta`) REFERENCES `contas` (`id`),
+  ADD CONSTRAINT `fk_receber_parc_pagto` FOREIGN KEY (`id_pagamento`) REFERENCES `pagamentos` (`id`),
+  ADD CONSTRAINT `fk_receber_parc_principal` FOREIGN KEY (`id_conta_receber`) REFERENCES `contas_receber` (`id`);
+
+--
+-- Restrições para tabelas `lancamentos`
+--
+ALTER TABLE `lancamentos`
+  ADD CONSTRAINT `fk_lanc_conta` FOREIGN KEY (`id_conta`) REFERENCES `contas` (`id`),
+  ADD CONSTRAINT `fk_lanc_pagto` FOREIGN KEY (`id_pagamento`) REFERENCES `pagamentos` (`id`),
+  ADD CONSTRAINT `fk_lanc_user` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

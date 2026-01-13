@@ -6,28 +6,28 @@ use app\core\Model;
 use InvalidArgumentException;
 use PDO;
 
-class Pagar extends Model
+class Receber extends Model
 {
-    public function criarDocumentoPagar($pagar)
+    public function criarDocumentoReceber($receber)
     {
-        $sql = "INSERT INTO CONTAS_PAGAR  SET 
+        $sql = "INSERT INTO CONTAS_RECEBER  SET 
                      descricao      = :descricao, 
                      qtde_parcelas  = :qtde_parcelas, 
                      parcelado      = :parcelado,                  
                      uuid           = :uuid,
                      id_usuario     = :id_usuario,
                      valor_total    = :valor_total,
-                     id_fornecedor  = :id_fornecedor";
+                     id_cliente     = :id_cliente";
 
         $qry = $this->db->prepare($sql);
 
-        $qry->bindValue(":descricao",     $pagar->descricao);
-        $qry->bindValue(":qtde_parcelas", $pagar->qtde_parcelas);
-        $qry->bindValue(":parcelado",     $pagar->parcelado);
-        $qry->bindValue(":uuid",          $pagar->uuid);
-        $qry->bindValue(":id_usuario",    $pagar->id_usuario);
-        $qry->bindValue(":valor_total",   $pagar->valor_total);
-        $qry->bindValue(":id_fornecedor", $pagar->id_fornecedor);
+        $qry->bindValue(":descricao",     $receber->descricao);
+        $qry->bindValue(":qtde_parcelas", $receber->qtde_parcelas);
+        $qry->bindValue(":parcelado",     $receber->parcelado);
+        $qry->bindValue(":uuid",          $receber->uuid);
+        $qry->bindValue(":id_usuario",    $receber->id_usuario);
+        $qry->bindValue(":valor_total",   $receber->valor_total);
+        $qry->bindValue(":id_cliente",    $receber->id_cliente);
 
         if (!$qry->execute()) {
             $error = $qry->errorInfo();
@@ -35,41 +35,32 @@ class Pagar extends Model
         }
         return $this->db->lastInsertId();
     }
-    public function criarDocumentoPagarParcelas($pagar)
+    public function criarDocumentoReceberParcelas($receber)
     {
-       // dd($pagar);
-        try {
-            $sql = "INSERT INTO CONTAS_PAGAR_PARCELAS  SET 
-                     id_conta_pagar  = :id_conta_pagar, 
-                     id_conta        = :id_conta, 
-                     status          = :status,                  
-                     numero_parcela  = :numero_parcela,
-                     valor           = :valor,
-                     data_vencimento = :data_vencimento,             
-                     pago_por        = :pago_por,
-                     data_pagamento  = :data_pagamento,
-                     id_pagamento    = :id_pagamento";
+        $sql = "INSERT INTO CONTAS_RECEBER_PARCELAS  SET 
+                     id_conta_receber  = :id_conta_receber, 
+                     id_conta          = :id_conta, 
+                     status            = :status,                  
+                     numero_parcela    = :numero_parcela,
+                     valor             = :valor,
+                     data_vencimento   = :data_vencimento,             
+                     recebido_por      = :recebido_por";
 
-            $qry = $this->db->prepare($sql);
+        $qry = $this->db->prepare($sql);
 
-            $qry->bindValue(":id_conta_pagar",  $pagar['id_conta_pagar']);
-            $qry->bindValue(":id_conta",        $pagar['id_conta']);
-            $qry->bindValue(":status",          $pagar['status']);
-            $qry->bindValue(":numero_parcela",  $pagar['numero_parcela']);
-            $qry->bindValue(":valor",           $pagar['valor']);
-            $qry->bindValue(":data_vencimento", $pagar['data_vencimento']);
-            $qry->bindValue(":pago_por",        $pagar['pago_por']);
-            $qry->bindValue(":data_pagamento",  $pagar['data_pagamento']);
-            $qry->bindValue(":id_pagamento",    $pagar['id_pagamento']);
+        $qry->bindValue(":id_conta_receber",  $receber['id_conta_receber']);
+        $qry->bindValue(":id_conta",          $receber['id_conta']);
+        $qry->bindValue(":status",            $receber['status']);
+        $qry->bindValue(":numero_parcela",    $receber['numero_parcela']);
+        $qry->bindValue(":valor",             $receber['valor']);
+        $qry->bindValue(":data_vencimento",   $receber['data_vencimento']);
+        $qry->bindValue(":recebido_por",          $receber['recebido_por']);
 
-            if (!$qry->execute()) {
-                $error = $qry->errorInfo();
-                return $error;
-            }
-            return $this->db->lastInsertId();
-        } catch (\Throwable $th) {
-            return $th->messege;
+        if (!$qry->execute()) {
+            $error = $qry->errorInfo();
+            return $error;
         }
+        return $this->db->lastInsertId();
     }
     public function visualizar($uuid, $id = null)
     {
@@ -81,16 +72,16 @@ class Pagar extends Model
             c.valor, 
             c.data_vencimento, 
             c.status, 
-            f.nome AS fornecedor, 
+            f.nome AS cliente, 
             h.id AS id_conta,
             h.nome AS conta, 
             c.id AS id_parcela, 
             u.nome AS usuario
-        FROM contas_pagar p 
-        INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
-        INNER JOIN fornecedores f          ON p.id_fornecedor = f.id
-        INNER JOIN contas h                ON c.id_conta = h.id
-        INNER JOIN usuarios u              ON u.id = p.id_usuario
+        FROM contas_receber p 
+        INNER JOIN contas_receber_parcelas c ON p.id = c.id_conta_receber
+        INNER JOIN clientes f                ON p.id_cliente = f.id
+        INNER JOIN contas h                  ON c.id_conta = h.id
+        INNER JOIN usuarios u                ON u.id = p.id_usuario
         WHERE c.id = :id
           AND p.uuid = :uuid";
 
@@ -112,16 +103,16 @@ class Pagar extends Model
             c.valor, 
             c.data_vencimento, 
             c.status, 
-            f.nome AS fornecedor, 
+            f.nome AS cliente, 
             h.id AS id_conta,
             h.nome AS conta, 
             c.id AS id_parcela, 
             u.nome AS usuario
-        FROM contas_pagar p 
-        INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
-        INNER JOIN fornecedores f          ON p.id_fornecedor = f.id
-        INNER JOIN contas h                ON c.id_conta = h.id
-        INNER JOIN usuarios u              ON u.id = p.id_usuario
+        FROM contas_receber p 
+        INNER JOIN contas_receber_parcelas c ON p.id = c.id_conta_receber
+        INNER JOIN clientes f                ON p.id_cliente = f.id
+        INNER JOIN contas h                  ON c.id_conta = h.id
+        INNER JOIN usuarios u                ON u.id = p.id_usuario
         WHERE c.data_vencimento >= CURRENT_DATE
           AND p.uuid = :uuid
           AND c.status = :status";
@@ -145,14 +136,14 @@ class Pagar extends Model
             c.valor, 
             c.data_vencimento, 
             c.status, 
-            f.nome AS fornecedor, 
+            f.nome AS cliente, 
             h.id AS id_conta,
             h.nome AS conta, 
             c.id AS id_parcela, 
             u.nome AS usuario
-        FROM contas_pagar p 
-        INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
-        INNER JOIN fornecedores f          ON p.id_fornecedor = f.id
+        FROM contas_receber p 
+        INNER JOIN contas_receber_parcelas c ON p.id = c.id_conta_receber
+        INNER JOIN clientes f              ON p.id_cliente = f.id
         INNER JOIN contas h                ON c.id_conta = h.id
         INNER JOIN usuarios u              ON u.id = p.id_usuario
         WHERE c.data_vencimento < CURRENT_DATE
@@ -171,7 +162,7 @@ class Pagar extends Model
         $qry->execute();
         return $qry->fetchAll(\PDO::FETCH_OBJ) ?: null;
     }
-    public function contasPagas($uuid)
+    public function contasRecebidas($uuid)
     {
         $sql = "SELECT 
             p.id, 
@@ -181,23 +172,23 @@ class Pagar extends Model
             c.valor, 
             c.data_vencimento, 
             c.status, 
-            f.nome AS fornecedor, 
+            f.nome AS cliente, 
             h.id AS id_conta,
             h.nome AS conta, 
             c.id AS id_parcela, 
             u.nome AS usuario
-        FROM contas_pagar p 
-        INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
-        INNER JOIN fornecedores f          ON p.id_fornecedor = f.id
-        INNER JOIN contas h                ON c.id_conta = h.id
-        INNER JOIN usuarios u              ON u.id = p.id_usuario
+        FROM contas_receber p 
+        INNER JOIN contas_receber_parcelas c ON p.id = c.id_conta_receber
+        INNER JOIN clientes f                ON p.id_cliente = f.id
+        INNER JOIN contas h                  ON c.id_conta = h.id
+        INNER JOIN usuarios u                ON u.id = p.id_usuario
         WHERE c.status = :status
           AND p.uuid   = :uuid";
 
         $qry = $this->db->prepare($sql);
 
         $qry->bindValue(':uuid', $uuid, PDO::PARAM_STR);
-        $qry->bindValue(':status', 'PAGO', PDO::PARAM_STR);
+        $qry->bindValue(':status', 'RECEBIDO', PDO::PARAM_STR);
         $qry->execute();
         return $qry->fetchAll(\PDO::FETCH_OBJ) ?: null;
     }
@@ -209,8 +200,8 @@ class Pagar extends Model
 
         $sql = "SELECT 
             COUNT(p.id) AS total 
-        FROM contas_pagar p
-        INNER JOIN contas_pagar_parcelas c ON p.id = c.id_conta_pagar
+        FROM contas_receber p
+        INNER JOIN contas_receber_parcelas c ON p.id = c.id_conta_receber
         WHERE p.id = :id";
 
         $stmt = $this->db->prepare($sql);
@@ -226,7 +217,7 @@ class Pagar extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = "DELETE FROM contas_pagar_parcelas WHERE id = :id";
+        $sql = "DELETE FROM contas_receber_parcelas WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id_parcela, PDO::PARAM_INT);
         $stmt->execute();
@@ -239,20 +230,20 @@ class Pagar extends Model
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = "DELETE FROM contas_pagar WHERE id = :id";
+        $sql = "DELETE FROM contas_receber WHERE id = :id";
         $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':id', $id_parcela, PDO::PARAM_INT);
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
     }
-    public function pagar(int $id, object $pagar): bool
+    public function receber(int $id, object $receber): bool
     {
         if ($id <= 0) {
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = "UPDATE contas_pagar_parcelas SET 
+        $sql = "UPDATE contas_receber_parcelas SET 
             id_conta       = :id_conta, 
             id_pagamento   = :id_pagamento, 
             data_pagamento = :data_pagamento, 
@@ -261,22 +252,22 @@ class Pagar extends Model
 
         $stmt = $this->db->prepare($sql);
 
-        $stmt->bindValue(':id_conta',       $pagar->id_conta,     PDO::PARAM_INPUT_OUTPUT);
-        $stmt->bindValue(':id_pagamento',   $pagar->id_pagamento,    PDO::PARAM_INT);
-        $stmt->bindValue(':data_pagamento', $pagar->data_pagamento, PDO::PARAM_STR);
-        $stmt->bindValue(':status',         $pagar->status, PDO::PARAM_STR);
+        $stmt->bindValue(':id_conta',       $receber->id_conta,     PDO::PARAM_INPUT_OUTPUT);
+        $stmt->bindValue(':id_pagamento',   $receber->id_pagamento,    PDO::PARAM_INT);
+        $stmt->bindValue(':data_pagamento', $receber->data_pagamento, PDO::PARAM_STR);
+        $stmt->bindValue(':status',         $receber->status, PDO::PARAM_STR);
         $stmt->bindValue(':id',             $id,                PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->rowCount() > 0;
     }
-    public function cancelarPagamento(int $id): bool
+    public function cancelarRecebimento(int $id): bool
     {
         if ($id <= 0) {
             throw new InvalidArgumentException("ID inválido.");
         }
 
-        $sql = "UPDATE contas_pagar_parcelas SET 
+        $sql = "UPDATE contas_receber_parcelas SET 
             id_pagamento   = :id_pagamento, 
             data_pagamento = :data_pagamento, 
             status         = :status

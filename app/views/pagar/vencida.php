@@ -41,7 +41,8 @@
           <table id="tabelaContas" class="table table-striped table-sm">
             <thead>
               <tr>
-                <th>fornecedor</th>
+                <th>Fornecedor</th>
+                <th>Documento</th>
                 <th>Descricao</th>
                 <th>Data emissao</th>
                 <th>Data vencimento</th>
@@ -57,7 +58,9 @@
 
                 <?php foreach ($dados as $pagar) { ?>
                   <tr>
-                    <td><?= $pagar->fornecedor ?? '' ?></td>
+                    <td><strong><?= $pagar->fornecedor ?? '' ?></strong></td>
+                    <td><strong>Documento <?= $pagar->id ?? '' ?></strong></td>
+
                     <td><?= $pagar->descricao ?? '' ?></td>
                     <td>
                       <?= !empty($pagar->data_emissao)

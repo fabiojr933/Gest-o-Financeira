@@ -26,7 +26,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
   <link rel="stylesheet" href="<?php echo URL_BASE ?>assets/plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="<?php echo URL_BASE ?>assets/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.1.4/css/rowGroup.bootstrap4.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.1.4/css/rowGroup.bootstrap4.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -89,54 +91,58 @@
   <script src="<?php echo URL_BASE ?>assets/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
   <script src="<?php echo URL_BASE ?>assets/plugins/datatables-buttons/js/buttons.print.min.js"></script>
   <script src="<?php echo URL_BASE ?>assets/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<script src="https://cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.min.js"></script>
-  
+  <script src="https://cdn.datatables.net/rowgroup/1.1.4/js/dataTables.rowGroup.min.js"></script>
+
   <script>
-$(document).ready(function () {
+    $(document).ready(function() {
 
-  // Configuração padrão em PT-BR
-  const configPadrao = {
-    language: {
-      url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
-    },
-    responsive: true,
-    autoWidth: false
-  };
+      // Configuração padrão em PT-BR
+      const configPadrao = {
+        language: {
+          url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json"
+        },
+        responsive: true,
+        autoWidth: false
+      };
 
-  // Tabela de Contas (com agrupamento)
-  $('#tabelaContas').DataTable({
-    ...configPadrao,
-    order: [[0, 'asc']],
-    rowGroup: {
-      dataSrc: 0
-    },
-    columnDefs: [
-      { visible: false, targets: 0 }
-    ],
-    pageLength: 25
-  });
+      // Tabela de Contas (com agrupamento)
+      $('#tabelaContas').DataTable({
+        ...configPadrao,
+        order: [
+          [0, 'asc'],
+          [1, 'desc']
+        ],
+        rowGroup: {
+          dataSrc: [0, 1]
+        },
+        columnDefs: [{
+          visible: false,
+          targets: [0, 1]
+        }],
+        pageLength: 25
+      });
 
-  // Example 1
-  const table1 = $('#example1').DataTable({
-    ...configPadrao,
-    lengthChange: false
-  });
+      // Example 1
+      const table1 = $('#example1').DataTable({
+        ...configPadrao,
+        lengthChange: false
+      });
 
-  table1.buttons().container()
-    .appendTo('#example1_wrapper .col-md-6:eq(0)');
+      table1.buttons().container()
+        .appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-  // Example 2
-  $('#example2').DataTable({
-    ...configPadrao,
-    paging: true,
-    searching: false,
-    ordering: true,
-    info: true,
-    lengthChange: false
-  });
+      // Example 2
+      $('#example2').DataTable({
+        ...configPadrao,
+        paging: true,
+        searching: false,
+        ordering: true,
+        info: true,
+        lengthChange: false
+      });
 
-});
-</script>
+    });
+  </script>
 
 
   <script>
@@ -160,18 +166,18 @@ $(document).ready(function () {
       });
     });
   </script>
-<script>
+  <script>
     $(document).ready(function() {
-        // Aplica a máscara ao campo de saldo
-        $('#valor input[name="valor"]').inputmask('currency', {
-            radixPoint: ',',
-            groupSeparator: '.',
-            allowMinus: false, // Descomente esta linha se quiser permitir números negativos
-            prefix: '',
-            autoUnmask: true
-        });
+      // Aplica a máscara ao campo de saldo
+      $('#valor input[name="valor"]').inputmask('currency', {
+        radixPoint: ',',
+        groupSeparator: '.',
+        allowMinus: false, // Descomente esta linha se quiser permitir números negativos
+        prefix: '',
+        autoUnmask: true
+      });
     });
-</script>
+  </script>
 
 </body>
 

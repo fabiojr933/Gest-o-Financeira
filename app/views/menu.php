@@ -1,16 +1,16 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="<?php echo URL_BASE ?>assets/index3.html" class="brand-link">
+    <a href="<?php echo URL_BASE ?>" class="brand-link">
         <img src="<?php echo URL_BASE ?>assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-        <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <span class="brand-text font-weight-light">FoxSistemas</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex"> 
             <div class="info">
-                <a href="<?php echo URL_BASE ?>assets/#" class="d-block"><?php echo isset($_SESSION[SESSION_LOGIN]['nome']) ? $_SESSION[SESSION_LOGIN]['nome'] : "Visitante"; ?></a>
+                <a href="<?php echo URL_BASE ?>" class="d-block"><?php echo isset($_SESSION['SESSION_LOGIN']->nome) ? $_SESSION['SESSION_LOGIN']->nome : "Visitante"; ?></a>
             </div>
         </div>
 
@@ -163,25 +163,25 @@
                     <ul class="nav nav-treeview" style="margin-left: 10px;">
 
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>receber/novo" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Novo Lançamento</p>
                             </a>
                         </li>   
                          <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>receber/aberta" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Em Aberto</p>
                             </a>
                         </li>    
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>receber/vencida" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Vencidas</p>
                             </a>
                         </li>  
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>receber/recebido" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Recebidas</p>
                             </a>
@@ -204,23 +204,17 @@
                     <ul class="nav nav-treeview" style="margin-left: 10px;">
 
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>fluxo/sintetico" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Fluxo financeiro</p>
+                                <p>Fluxo financeiro sintetico</p>
                             </a>
                         </li>   
-                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Despesas x Receitas</p>
-                            </a>
-                        </li>    
                         <li class="nav-item">
-                            <a href="<?php echo URL_BASE ?>#" class="nav-link">
+                            <a href="<?php echo URL_BASE ?>fluxo/analitico" class="nav-link">
                                 <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Pagar x Receber</p>
+                                <p>Fluxo financeiro analitico</p>
                             </a>
-                        </li>                                           
+                        </li>                                                                   
 
                     </ul>
                 </li>

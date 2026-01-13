@@ -78,8 +78,10 @@ class LancamentoController extends Controller
    public function salvar()
    {
       try {
-         $valor                    = str_replace(',', '.', $_POST['valor']);
-         $valor                    = (float) $valor;
+         $valor = $_POST['valor'];        // "1.500,00"
+         $valor = str_replace('.', '', $valor); // remove milhar → "1500,00"
+         $valor = str_replace(',', '.', $valor); // decimal → "1500.00"
+         $valor = (float) $valor;
          $lancamento               = new \stdClass();
          $lancamento->descricao    = $_POST['descricao'];
          $lancamento->id_pagamento = $_POST['id_pagamento'];

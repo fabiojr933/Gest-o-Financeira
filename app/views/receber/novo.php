@@ -26,7 +26,7 @@
             <div class="card-header">
               <h3 class="card-title">Preencha os dados abaixo</h3>
             </div>
-            <form action="<?php echo URL_BASE ?>pagar/salvar" method="post">
+            <form action="<?php echo URL_BASE ?>receber/salvar" method="post">
 
               <div class="card-body">
 
@@ -54,16 +54,15 @@
                       <label>Tipo</label>
                       <select class="form-control select2" style="width: 100%;" id="tipo" name="tipo" required>
                         <option value="ABERTO" selected>ABERTO</option>
-                        <option value="PAGO">PAGO</option>
                       </select>
                     </div>
                   </div>
 
                   <div class="col-sm-4">
                     <div class="form-group">
-                      <label>Fornecedor</label>
-                      <select class="form-control select2" style="width: 100%;" name="id_fornecedor" required>
-                        <?php foreach ($fornecedor as $data) { ?>
+                      <label>Cliente</label>
+                      <select class="form-control select2" style="width: 100%;" name="id_cliente" required>
+                        <?php foreach ($cliente as $data) { ?>
                           <option value="<?= $data->id ?>"><?= $data->nome ?></option>
                         <?php } ?>
                       </select>
@@ -94,23 +93,9 @@
 
                   <div class="col-sm-6" id="bloco-despesa">
                     <div class="form-group">
-                      <label>Despesa</label>
+                      <label>Receita</label>
                       <select class="form-control select2" style="width: 100%;" name="origem_id" required>
-                        <?php foreach ($despesa as $data) { ?>
-                          <option value="<?= $data->id ?>"><?= $data->nome ?></option>
-                        <?php } ?>
-                      </select>
-                    </div>
-                  </div>
-
-                </div>
-
-                <div class="row">
-                   <div class="col-sm-12" id="bloco-pagamento" style="display:none;">
-                    <div class="form-group">
-                      <label>Pagamento</label>
-                      <select class="form-control select2" style="width: 100%;"  id="pagamento" name="pagamento" required>
-                        <?php foreach ($pagamento as $data) { ?>
+                        <?php foreach ($receita as $data) { ?>
                           <option value="<?= $data->id ?>"><?= $data->nome ?></option>
                         <?php } ?>
                       </select>
@@ -136,33 +121,6 @@
 </div>
 </section>
 </div>
-
-<script>
-$(document).ready(function () {
-
-    function controlaPagamento() {
-        if ($('#tipo').val() === 'PAGO') {
-            $('#bloco-pagamento').show();
-            $('#pagamento')
-                .attr('name', 'pagamento')
-                .attr('required', true);
-        } else {
-            $('#bloco-pagamento').hide();
-            $('#pagamento')
-               // .removeAttr('name')
-             //   .removeAttr('required')
-            //    .val(null);
-              //  .trigger('change'); // limpa Select2
-        }
-    }
-
-    // Ao carregar
-    controlaPagamento();
-
-    // Ao mudar
-    $('#tipo').on('change', controlaPagamento);
-});
-</script>
 
 
 <script>
